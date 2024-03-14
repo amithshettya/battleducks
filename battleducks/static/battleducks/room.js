@@ -39,7 +39,7 @@ function connectToServer() {
 
     }
 
-    setUpBoard(socket)
+    setUpGame(socket)
     setupChat(socket)
 }
 
@@ -54,14 +54,18 @@ function handleShootEvent(data) {
 }
 
 
-function setUpBoard(socket) {
-    const grid = document.getElementById("battleship-grid-self");
+function setUpGame(socket) {
+    setUpBoard(socket, "self")
+    setUpBoard(socket, "opponent")
+}
+function setUpBoard(socket, player) {
+    const grid = document.getElementById(`battleship-grid-${player}`);
 
     for (let i = 0; i < 15; i++) { // 15x15 grid
         for (let j = 0; j < 15; j++) {
             const cell = document.createElement("div");
             cell.classList.add("cell");
-            cell.id = `cell-${i}-${j}`; // Assigns a unique ID to each cell
+            cell.id = `${player}-cell-${i}-${j}`; // Assigns a unique ID to each cell
             cell.addEventListener("click", function () {
                 colorShotCell(cell.id)
                 //send shoot event via websocket

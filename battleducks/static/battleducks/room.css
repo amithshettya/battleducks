@@ -1,0 +1,68 @@
+input, button {
+    font-size: x-large;
+}
+
+li {
+    font-size: xx-large;
+}
+
+label {
+    font-size: x-large;
+}
+
+.title {
+    font-size: xx-large;
+    font-weight: bolder;
+    padding-bottom: 20px;
+}
+
+.sub-title {
+    font-size: x-large;
+    padding: 10px;
+    margin: 30px;
+    width: 300px;
+    background-color: lightblue;
+}
+
+.error {
+    font-size: x-large;
+    color:red;
+}
+
+.add-form {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.delete-form {
+    display: inline;
+}
+
+.details {
+    font-size: large;
+    font-style: italic;
+}
+
+
+
+
+.battleship-grid {
+  display: grid;
+  grid-template-columns: repeat(15, 2em); /* Creates 15 columns */
+  grid-template-rows: repeat(15, 2em); /* Creates 15 rows */
+  gap: 2px; /* Space between cells */
+}
+
+.cell {
+  width: 2em; /* Cell width */
+  height: 2em; /* Cell height */
+  background-color: #f0f0f0; /* Cell default background */
+  border: 1px solid #ddd; /* Cell border */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell.clicked {
+  background-color: red; /* Background color when clicked */
+}

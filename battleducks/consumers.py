@@ -40,10 +40,16 @@ class ChatConsumer(WebsocketConsumer):
         action = data['action']
 
         if action == 'shoot':
-            cell = data["cell"]
-            print("SHOOT " + cell)
+            cell_x = data["cell_x"]
+            cell_y = data["cell_y"]
             async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name, {"type": "shoot_duck", "cell": cell}
+                self.room_group_name,
+                {
+                    "type": "shoot_duck",
+                    "cell_x": cell_x,
+                    "cell_y": cell_y,
+                    "sender_channel_name": self.channel_name
+                }
             )
             return
 
@@ -65,10 +71,13 @@ class ChatConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({"eventType": "chat", "message": message}))
 
     def shoot_duck(self, event):
-        cell = event["cell"]
+        # send to everyone else than the sender
+        if self.channel_name != event['sender_channel_name']:
+            cell_x = event["cell_x"]
+            cell_y = event["cell_y"]
 
-        # Send message to WebSocket
-        self.send(text_data=json.dumps({"eventType": "shoot", "cell": cell}))
+            # Send message to WebSocket
+            self.send(text_data=json.dumps({"eventType": "shoot", "cell_x": cell_x, "cell_y": cell_y}))
 
 
     def send_error(self, error_message):

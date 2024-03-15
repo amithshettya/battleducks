@@ -91,7 +91,8 @@ function colorShotCell(cell_x, cell_y, player) {
     const cellId = `${player}-cell-${cell_x}-${cell_y}`;
     const cell = document.getElementById(cellId)
     if (!cell.classList.contains("shot")) {
-         cell.classList.add("shot");
+        cell.classList.remove("placed")
+        cell.classList.add("shot");
     }
 }
 

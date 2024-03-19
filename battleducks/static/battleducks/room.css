@@ -63,6 +63,18 @@ label {
   align-items: center;
 }
 
-.cell.clicked {
+.cell.shot {
   background-color: red; /* Background color when clicked */
+}
+
+.cell.placed {
+  background-color: green; /* Background color when clicked */
+}
+
+
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-gap: 20px;
 }

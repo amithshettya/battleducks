@@ -39,7 +39,7 @@ function connectToServer() {
 
     }
 
-    setUpBoard(socket)
+    setUpGame(socket)
     setupChat(socket)
 }
 
@@ -48,38 +48,61 @@ function handleChatEvent(data) {
 }
 
 function handleShootEvent(data) {
-    const cellId = data.cell
-    document.getElementById('chat-log').value += ("SHOOT: " + cellId + '\n');
-    colorShotCell(cellId)
+    const cell_x = data.cell_x
+    const cell_y = data.cell_y
+    document.getElementById('chat-log').value += ("Got shot at coordinate: " + cell_x + + " " + cell_y + '\n');
+    //we will color self board if receive shot event from opponent
+    colorShotCell(cell_x, cell_y, "self")
 }
 
 
-function setUpBoard(socket) {
-    const grid = document.getElementById("battleship-grid-self");
+function setUpGame(socket) {
+    setUpBoard(socket, "self")
+    setUpBoard(socket, "opponent")
+}
+function setUpBoard(socket, player) {
+    const grid = document.getElementById(`battleship-grid-${player}`);
 
     for (let i = 0; i < 15; i++) { // 15x15 grid
         for (let j = 0; j < 15; j++) {
             const cell = document.createElement("div");
             cell.classList.add("cell");
-            cell.id = `cell-${i}-${j}`; // Assigns a unique ID to each cell
+            cell.id = `${player}-cell-${i}-${j}`; // Assigns a unique ID to each cell
             cell.addEventListener("click", function () {
-                colorShotCell(cell.id)
                 //send shoot event via websocket
-                let data = {"action": "shoot", "cell": cell.id}
-                socket.send(JSON.stringify(data))
+                if(player === "opponent"){
+                    colorShotCell(i, j, player)
+                    let data = {
+                        "action": "shoot",
+                        "cell_x": i,
+                        "cell_y": j,
+                    }
+                    socket.send(JSON.stringify(data))
+                } else {
+                    colorPlacedCell(i, j)
+                }
             });
             grid.appendChild(cell);
         }
     }
 }
 
-function colorShotCell(cellId) {
+function colorShotCell(cell_x, cell_y, player) {
+    const cellId = `${player}-cell-${cell_x}-${cell_y}`;
     const cell = document.getElementById(cellId)
-    if (!cell.classList.contains("clicked")) {
-         cell.classList.add("clicked");
+    if (!cell.classList.contains("shot")) {
+        cell.classList.remove("placed")
+        cell.classList.add("shot");
     }
 }
 
+function colorPlacedCell(cell_x, cell_y) {
+    const cellId = `self-cell-${cell_x}-${cell_y}`;
+    const cell = document.getElementById(cellId)
+    if (!cell.classList.contains("placed")) {
+         cell.classList.add("placed");
+    }
+}
 
 
 

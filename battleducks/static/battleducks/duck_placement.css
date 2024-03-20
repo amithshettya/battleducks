@@ -1,0 +1,34 @@
+.duck {
+    object-fit: stretch;
+    --unit-size: 2em;
+    cursor: move;
+}
+
+.duck.normal {
+    width: calc(var(--unit-size) * 2);
+    height: calc(var(--unit-size) * 1);
+}
+
+.duck.chubby {
+    width: calc(var(--unit-size) * 2);
+    height: calc(var(--unit-size) * 2);
+}
+
+.duck.long {
+    width: calc(var(--unit-size) * 4);
+    height: calc(var(--unit-size) * 1);
+}
+
+.duck.wide {
+    width: calc(var(--unit-size) * 4);
+    height: calc(var(--unit-size) * 2);
+}
+
+.duck.very-long {
+    width: calc(var(--unit-size) * 6);
+    height: calc(var(--unit-size) * 1);
+}
+
+.placing {
+    background-color: red;
+}

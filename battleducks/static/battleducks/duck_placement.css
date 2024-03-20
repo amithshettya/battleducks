@@ -1,34 +1,38 @@
 .duck {
-    object-fit: stretch;
     --unit-size: 2em;
     cursor: move;
+    z-index: 10;
 }
 
 .duck.normal {
-    width: calc(var(--unit-size) * 2);
-    height: calc(var(--unit-size) * 1);
-}
+    width: calc( (var(--unit-size) + 2px) * 1 - 2px);
+    height: calc( (var(--unit-size) + 2px) * 1 - 2px);
+}  
 
 .duck.chubby {
-    width: calc(var(--unit-size) * 2);
-    height: calc(var(--unit-size) * 2);
+    width: calc( (var(--unit-size) + 2px) * 2 - 2px);
+    height: calc( (var(--unit-size) + 2px) * 1 - 2px);
 }
 
 .duck.long {
-    width: calc(var(--unit-size) * 4);
-    height: calc(var(--unit-size) * 1);
+    width: calc( (var(--unit-size) + 2px) * 1 - 2px);
+    height: calc( (var(--unit-size) + 2px) * 4 - 2px);
 }
 
 .duck.wide {
-    width: calc(var(--unit-size) * 4);
-    height: calc(var(--unit-size) * 2);
+    width: calc( (var(--unit-size) + 2px) * 2 - 2px);
+    height: calc( (var(--unit-size) + 2px) * 4 - 2px);
 }
 
 .duck.very-long {
-    width: calc(var(--unit-size) * 6);
-    height: calc(var(--unit-size) * 1);
+    width: calc( (var(--unit-size) + 2px) * 1 - 2px);
+    height: calc( (var(--unit-size) + 2px) * 6 - 2px);
 }
 
-.placing {
-    background-color: red;
+.duck-shadow {
+    background-color: rgba(124, 235, 168, 0.785);
+}
+
+.duck-placed {
+    background-color: rgba(118, 214, 233, 0.785);
 }

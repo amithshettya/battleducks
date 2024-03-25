@@ -3,10 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Ducks War</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'battleducks/base.css' %}">
+    <link rel="stylesheet" href="{% static 'battleducks/user-info.css' %}">
 </head>
 <body>
-    <p>Placeholder index</p>
-    {{user.first_name}} {{user.last_name}}
-    {{ extra_data }}
+    <div class="user-info">
+        <div class="dropdown">
+            <img style="border-radius: 50%; height: 2em;" src="{{ profile_pic }}" alt="User profile picture"><br>
+            <div class="dropdown-content">
+                {{user.first_name}} {{user.last_name}} <br>
+                <form action="{% url 'logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div>
+        <p>Placeholder index</p>
+        <div>
+            {{user.first_name}} {{user.last_name}}
+        </div>
+        <div>
+            <p>Extra data:</p>
+            {% for key, value in extra_data.items %}
+                <p>{{ key }} : {{ value }}</p>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>

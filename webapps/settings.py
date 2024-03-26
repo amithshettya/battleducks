@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -125,7 +126,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 # OAuth
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
@@ -143,3 +143,11 @@ LOGIN_URL = 'battleducks/login'
 
 # Default URL to redirect to after a user logs in.
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+
+ASGI_APPLICATION = "webapps.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    },
+}

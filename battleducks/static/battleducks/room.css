@@ -58,9 +58,9 @@ label {
   height: 2em; /* Cell height */
   background-color: #f0f0f0; /* Cell default background */
   border: 1px solid #ddd; /* Cell border */
-  display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .cell.shot {

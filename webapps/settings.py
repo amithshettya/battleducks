@@ -21,11 +21,9 @@ CONFIG.read(BASE_DIR / "config.ini")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+# TODO generate token and put in config.ini before running
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-hw9*ja!m9h9=!it0##p+n7^tq1xi$%d6-(sp$a@y%+*ea!$0ov"
-# TODO change to this once ready to deploy
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = CONFIG.get("Django", "Secret")
+SECRET_KEY = CONFIG.get("Django", "Secret")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

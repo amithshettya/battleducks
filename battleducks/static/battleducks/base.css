@@ -1,5 +1,4 @@
 .main-container {
-    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
@@ -11,4 +10,31 @@
 .center {
     text-align: center;
     padding: 20px;
+}
+
+input, button {
+    font-size: x-large;
+}
+
+li {
+    font-size: xx-large;
+}
+
+label {
+    font-size: x-large;
+}
+
+.title {
+    font-size: xx-large;
+    font-weight: bolder;
+    padding-bottom: 5vw;
+}
+
+.sub-title {
+    font-size: large;
+}
+
+.error {
+    font-size: x-large;
+    color:red;
 }

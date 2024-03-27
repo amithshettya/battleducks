@@ -11,6 +11,8 @@
     <div class="main-container">
         <div class="center">
             <h1 class="title">War of the Ducks</h1>
+            <h3 class="sub-title">Continue with Google</h3>
+            <p>Use Google to authenticate with this app.</p>
             <form action="{% url 'social:begin' 'google-oauth2' %}" method="get">
                 <button type="submit" class="login-with-google-btn" >Continue with Google</button>
             </form>

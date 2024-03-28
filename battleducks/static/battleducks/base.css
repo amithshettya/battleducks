@@ -1,0 +1,41 @@
+.main-container {
+    font-family: "Comic Sans MS", serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.center {
+    text-align: center;
+    padding: 20px;
+}
+
+input, button {
+    font-size: x-large;
+}
+
+li {
+    font-size: xx-large;
+}
+
+label {
+    font-size: x-large;
+}
+
+.title {
+    font-size: xx-large;
+    font-weight: bolder;
+    padding-bottom: 5vw;
+}
+
+.sub-title {
+    font-size: large;
+}
+
+.error {
+    font-size: x-large;
+    color:red;
+}

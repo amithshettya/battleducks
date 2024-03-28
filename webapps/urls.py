@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from battleducks import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.index),
+    path('oauth/', include('social_django.urls', namespace='social')),
+    path('logout', auth_views.logout_then_login, name='logout'),
     path("battleducks/", include("battleducks.urls")),
 ]

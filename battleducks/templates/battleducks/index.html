@@ -1,26 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
+    <meta charset="UTF-8">
+    <title>Ducks War</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'battleducks/base.css' %}">
+    <link rel="stylesheet" href="{% static 'battleducks/user-info.css' %}">
 </head>
 <body>
-    What chat room would you like to enter?<br>
-    <input id="room-name-input" type="text" size="100"><br>
-    <input id="room-name-submit" type="button" value="Enter">
+    <div class="user-info">
+        <div class="dropdown">
+            <img style="border-radius: 50%; height: 2em;" src="{{ profile_pic }}" alt="User profile picture"><br>
+            <div class="dropdown-content">
+                {{user.first_name}} {{user.last_name}} <br>
+                <form action="{% url 'logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div>
+        <p>Placeholder index</p>
+        <div>
+            {{user.first_name}} {{user.last_name}}
+        </div>
+        <div>
+            <p>Extra data:</p>
+            {% for key, value in extra_data.items %}
+                <p>{{ key }} : {{ value }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div>
+        What chat room would you like to enter?<br>
+        <input id="room-name-input" type="text" size="100"><br>
+        <input id="room-name-submit" type="button" value="Enter">
 
-    <script>
-        document.querySelector('#room-name-input').focus();
-        document.querySelector('#room-name-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#room-name-submit').click();
-            }
-        };
+        <script>
+            document.querySelector('#room-name-input').focus();
+            document.querySelector('#room-name-input').onkeyup = function(e) {
+                if (e.key === 'Enter') {  // enter, return
+                    document.querySelector('#room-name-submit').click();
+                }
+            };
 
-        document.querySelector('#room-name-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/battleducks/room/' + roomName;
-        };
-    </script>
+            document.querySelector('#room-name-submit').onclick = function(e) {
+                var roomName = document.querySelector('#room-name-input').value;
+                window.location.pathname = '/battleducks/room/' + roomName;
+            };
+        </script>
+    </div>
 </body>
 </html>

@@ -69,10 +69,10 @@ body {
 }
 
 .battleship-grid {
-display: grid;
-grid-template-columns: repeat(15, 2em); /* Creates 15 columns */
-grid-template-rows: repeat(15, 2em); /* Creates 15 rows */
-gap: 0px; /* Space between cells */
+  display: grid;
+  grid-template-columns: repeat(15, 2em); /* Creates 15 columns */
+  grid-template-rows: repeat(15, 2em); /* Creates 15 rows */
+  gap: 0px; /* Space between cells */
 }
 
 img {
@@ -84,6 +84,7 @@ img {
   width: 2em; /* Cell width */
   height: 2em; /* Cell height */
   border: 1px solid var(--super-light-red);
+  border-radius: 0.5rem;
   margin: 0px;
   justify-content: center;
   align-items: center;
@@ -110,6 +111,9 @@ img {
   color: hsl(0 0% 30% / 1);
 }
 
+.text-area-pad-small {
+  margin: 5px;
+}
 
 .neumorphic-inner {
   border: 0.5rem solid transparent;

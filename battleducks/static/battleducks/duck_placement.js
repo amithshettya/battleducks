@@ -27,14 +27,14 @@ function getSizeFromImageElement(img) {
 }
 
 function getCellIDFromCoordinate(x, y) {
-  return `cell-${y}-${x}`
+    return `cell-${y}-${x}`
 }
 
 function getCoordinateFromCellID(cell_id){
-  return {
-    x: parseInt(cell_id.split('-')[2], 10),
-    y: parseInt(cell_id.split('-')[1], 10),
-  }
+    return {
+        x: parseInt(cell_id.split('-')[2], 10),
+        y: parseInt(cell_id.split('-')[1], 10),
+    }
 }
 
 
@@ -223,50 +223,52 @@ class Arena {
     }
     
     redraw() {
-      // remove all childrens
-      while(this.board.element.lastChild) {
-          this.board.element.removeChild(this.board.element.lastChild);
-      }
-      this.board.draw();
-      
-      while(this.duckTray.element.lastChild) {
-        this.duckTray.element.removeChild(this.duckTray.element.lastChild);
-      }
-      this.duckTray.addDucks(createDucksFromDuckSizes(DUCK_SIZES));
+        // remove all childrens
+        while(this.board.element.lastChild) {
+            this.board.element.removeChild(this.board.element.lastChild);
+        }
+        this.board.draw();
+        
+        while(this.duckTray.element.lastChild) {
+            this.duckTray.element.removeChild(this.duckTray.element.lastChild);
+        }
+        this.duckTray.addDucks(createDucksFromDuckSizes(DUCK_SIZES));
     }
 }
 
 
 class RandomPlacer {
     constructor(button, arena) {
-      this.element = button;
-      this.arena = arena;
+        this.element = button;
+        this.arena = arena;
     }
   
     listenButtonClick() {
-      this.element.addEventListener('click', () => {
-          this.startRandomPlacement();
-      });
+        this.element.addEventListener('click', () => {
+            this.startRandomPlacement();
+        });
     }
     
     startRandomPlacement() {
-      const startTime = Date.now();
-      const endTime = startTime + 1000;
-      while(Date.now() < endTime) {
-          const ducks = Array.from(this.arena.duckTray.element.children)
-          if(ducks.length == 0)
-              return;
-        
-          const cells = Array.from(this.arena.board.element.children)
-          const randomIndex = Math.floor(Math.random() * cells.length);
-          const cell = cells[randomIndex];
-        
-          const duck = ducks.pop();
-          const size = getSizeFromImageElement(duck);
-          if(this.arena.board.isDuckPlacable(cell.id, size)) {
-            this.arena.board.dropDuck(cell, duck);
-          }
-      }
+        const startTime = Date.now();
+        const endTime = startTime + 1000; // Atmost, try for one second.
+        while(Date.now() < endTime) {
+            const ducks = Array.from(this.arena.duckTray.element.children)
+            if(ducks.length == 0)
+                return;
+            
+            const cells = Array.from(this.arena.board.element.children)
+            const randomIndex = Math.floor(Math.random() * cells.length);
+            const cell = cells[randomIndex];
+            
+            const duck = ducks.pop();
+            const size = getSizeFromImageElement(duck);
+            if(this.arena.board.isDuckPlacable(cell.id, size)) {
+                this.arena.board.dropDuck(cell, duck);
+            } else {
+                ducks.push(duck);
+            }
+        }
       
       // TODO: clean up if not all ducks were place
     }

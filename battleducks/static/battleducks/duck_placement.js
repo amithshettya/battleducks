@@ -8,8 +8,6 @@ const DUCK_SIZES = [
 ];
 DUCK_SPRITE = 'https://i.ibb.co/qxxPWsJ/duck.png';
 
-globalDraggedDuckSizeTracker = null;
-
 
 function createDucksFromDuckSizes(duckSizes) {
     const ducks = [];
@@ -67,22 +65,21 @@ class Board {
         }
     }
 
-    initializeDragEvents() {
+    initializeDragEvents(arena) {
         const duckCells = Array.from(this.element.children);
 
         duckCells.forEach((cell) => {
             cell.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 this.clearDuckShadow();
-
-                if(this.isDuckPlacable(e)) {
-                    this.showShadow(e, "duck-shadow");
+                if(this.isDuckPlacable(e, getSizeFromImageElement(arena.movingDuck))) {
+                    this.showShadow(e, getSizeFromImageElement(arena.movingDuck),"duck-shadow");
                 }
             });
             cell.addEventListener('drop', (e) => {
                 this.clearDuckShadow();
-                if(this.isDuckPlacable(e)) {
-                    this.dropDuck(e);
+                if(this.isDuckPlacable(e, getSizeFromImageElement(arena.movingDuck))) {
+                    this.dropDuck(e, arena.movingDuck);
                 }
             });
             cell.addEventListener('dragend', () => {
@@ -91,26 +88,24 @@ class Board {
         })
     }
 
-    dropDuck(e) {
+    dropDuck(e, movingDuck) {
         const cell = e.target;
-        const duckSize = globalDraggedDuckSizeTracker;
-        const draggedDuck = new Duck(duckSize);
-        draggedDuck.element.setAttribute('draggable', false);
-        draggedDuck.element.style.position = 'absolute';
-        draggedDuck.element.style.left = `${cell.getBoundingClientRect().left}px`;
-        draggedDuck.element.style.top = `${cell.getBoundingClientRect().top}px`;
 
-        this.element.appendChild(draggedDuck.element);
+        movingDuck.setAttribute('draggable', false);
+        movingDuck.style.position = 'absolute';
+        movingDuck.style.left = `${cell.getBoundingClientRect().left}px`;
+        movingDuck.style.top = `${cell.getBoundingClientRect().top}px`;
+
+        this.element.appendChild(movingDuck);
 
         this.clearDuckShadow();
-        this.showShadow(e, "duck-placed");
+        this.showShadow(e, getSizeFromImageElement(movingDuck), "duck-placed");
     }
 
-    isDuckPlacable(e) {
+    isDuckPlacable(e, size) {
         const cell_id = e.target.id;
         const coordinate = getCoordinateFromCellID(cell_id);
-        
-        const size = globalDraggedDuckSizeTracker
+   
         const coordinates = this.getDuckCoordinates(coordinate.x, coordinate.y, size);
      
         return this.isDuckInBound(coordinates) && !this.isDuckOverLapping(coordinates);
@@ -165,12 +160,11 @@ class Board {
         });
     }
 
-    showShadow(e, shadowClass) {
+    showShadow(e, size, shadowClass) {
         const cell = e.target
         const cell_id = cell.id;
         const coordinate = getCoordinateFromCellID(cell_id);
         
-        const size = globalDraggedDuckSizeTracker
         const duckCoordinates = this.getDuckCoordinates(coordinate.x, coordinate.y, size);
         
         if(!(this.isDuckInBound(duckCoordinates) && !this.isDuckOverLapping(duckCoordinates))) {
@@ -204,11 +198,11 @@ class DuckTray {
         }
     }
 
-    createNewDuckOnDrag() {
+    registerDuckOnDrag(arena) {
         const ducks = Array.from(this.element.children);
         ducks.forEach((img) => {
             img.addEventListener('dragstart', (e) => {
-                globalDraggedDuckSizeTracker = getSizeFromImageElement(img)
+                arena.movingDuck = img
             });
         })
     }
@@ -219,6 +213,7 @@ class Arena {
     constructor(board, duckTray) {
         this.board = board;
         this.duckTray = duckTray;
+        this.movingDuck = null;
     }
 
     initialize() {
@@ -227,8 +222,8 @@ class Arena {
     }
 
     setUpDragAndDrop() {
-        this.duckTray.createNewDuckOnDrag();
-        this.board.initializeDragEvents();
+        this.duckTray.registerDuckOnDrag(this);
+        this.board.initializeDragEvents(this);
     }
 }
 

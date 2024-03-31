@@ -55,11 +55,11 @@ class Board {
     }
 
     draw() {
-        for (let y = 0; y < BOARD_SIZE; y++) { // 15x15 grid
+        for (let y = 0; y < BOARD_SIZE; y++) { 
             for (let x = 0; x < BOARD_SIZE; x++) {
                 const cell = document.createElement("div");
                 cell.classList.add("cell");
-                cell.id = getCellIDFromCoordinate(x, y); // Assigns a unique ID to each cell
+                cell.id = getCellIDFromCoordinate(x, y); 
                 this.element.appendChild(cell);
             }
         }
@@ -72,14 +72,14 @@ class Board {
             cell.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 this.clearDuckShadow();
-                if(this.isDuckPlacable(e, getSizeFromImageElement(arena.movingDuck))) {
-                    this.showShadow(e, getSizeFromImageElement(arena.movingDuck),"duck-shadow");
+                if(this.isDuckPlacable(e.target.id, getSizeFromImageElement(arena.movingDuck))) {
+                    this.showShadow(e.target, getSizeFromImageElement(arena.movingDuck),"duck-shadow");
                 }
             });
             cell.addEventListener('drop', (e) => {
                 this.clearDuckShadow();
-                if(this.isDuckPlacable(e, getSizeFromImageElement(arena.movingDuck))) {
-                    this.dropDuck(e, arena.movingDuck);
+                if(this.isDuckPlacable(e.target.id, getSizeFromImageElement(arena.movingDuck))) {
+                    this.dropDuck(e.target, arena.movingDuck);
                 }
             });
             cell.addEventListener('dragend', () => {
@@ -88,9 +88,7 @@ class Board {
         })
     }
 
-    dropDuck(e, movingDuck) {
-        const cell = e.target;
-
+    dropDuck(cell, movingDuck) {
         movingDuck.setAttribute('draggable', false);
         movingDuck.style.position = 'absolute';
         movingDuck.style.left = `${cell.getBoundingClientRect().left}px`;
@@ -99,11 +97,10 @@ class Board {
         this.element.appendChild(movingDuck);
 
         this.clearDuckShadow();
-        this.showShadow(e, getSizeFromImageElement(movingDuck), "duck-placed");
+        this.showShadow(cell, getSizeFromImageElement(movingDuck), "duck-placed");
     }
 
-    isDuckPlacable(e, size) {
-        const cell_id = e.target.id;
+    isDuckPlacable(cell_id, size) {
         const coordinate = getCoordinateFromCellID(cell_id);
    
         const coordinates = this.getDuckCoordinates(coordinate.x, coordinate.y, size);
@@ -160,8 +157,7 @@ class Board {
         });
     }
 
-    showShadow(e, size, shadowClass) {
-        const cell = e.target
+    showShadow(cell, size, shadowClass) {
         const cell_id = cell.id;
         const coordinate = getCoordinateFromCellID(cell_id);
         
@@ -215,9 +211,9 @@ class Arena {
         this.duckTray = duckTray;
         this.movingDuck = null;
     }
-
-    initialize() {
-        this.board.draw();
+    
+    reinitialize() {
+        this.redraw();
         this.setUpDragAndDrop();
     }
 
@@ -225,14 +221,81 @@ class Arena {
         this.duckTray.registerDuckOnDrag(this);
         this.board.initializeDragEvents(this);
     }
+    
+    redraw() {
+      // remove all childrens
+      while(this.board.element.lastChild) {
+          this.board.element.removeChild(this.board.element.lastChild);
+      }
+      this.board.draw();
+      
+      while(this.duckTray.element.lastChild) {
+        this.duckTray.element.removeChild(this.duckTray.element.lastChild);
+      }
+      this.duckTray.addDucks(createDucksFromDuckSizes(DUCK_SIZES));
+    }
+}
+
+
+class RandomPlacer {
+    constructor(button, arena) {
+      this.element = button;
+      this.arena = arena;
+    }
+  
+    listenButtonClick() {
+      this.element.addEventListener('click', () => {
+          this.startRandomPlacement();
+      });
+    }
+    
+    startRandomPlacement() {
+      const startTime = Date.now();
+      const endTime = startTime + 1000;
+      while(Date.now() < endTime) {
+          const ducks = Array.from(this.arena.duckTray.element.children)
+          if(ducks.length == 0)
+              return;
+        
+          const cells = Array.from(this.arena.board.element.children)
+          const randomIndex = Math.floor(Math.random() * cells.length);
+          const cell = cells[randomIndex];
+        
+          const duck = ducks.pop();
+          const size = getSizeFromImageElement(duck);
+          if(this.arena.board.isDuckPlacable(cell.id, size)) {
+            this.arena.board.dropDuck(cell, duck);
+          }
+      }
+      
+      // TODO: clean up if not all ducks were place
+    }
+}
+
+
+class ArenaCleaner {
+    constructor(button, arena) {
+      this.element = button;
+      this.arena = arena;
+    }
+  
+    listenButtonClick() {
+      this.element.addEventListener('click', () => {
+          this.arena.reinitialize();
+      });
+    }
 }
 
 
 // game setup
 const board = new Board(document.getElementById(`battleship-grid`));
 const duckTray = new DuckTray(document.getElementById(`ducks-container`));
-duckTray.addDucks(createDucksFromDuckSizes(DUCK_SIZES))
 
 const arena = new Arena(board, duckTray);
+arena.reinitialize();
 
-arena.initialize();
+const randomPlacer = new RandomPlacer(document.getElementById(`place-randomly`), arena);
+randomPlacer.listenButtonClick();
+
+const cleaner = new ArenaCleaner(document.getElementById(`clean-arena`), arena)
+cleaner.listenButtonClick();

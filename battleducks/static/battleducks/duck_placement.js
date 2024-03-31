@@ -55,11 +55,11 @@ class Board {
     }
 
     draw() {
-        for (let y = 0; y < BOARD_SIZE; y++) { 
+        for (let y = 0; y < BOARD_SIZE; y++) { // 15x15 grid
             for (let x = 0; x < BOARD_SIZE; x++) {
                 const cell = document.createElement("div");
                 cell.classList.add("cell");
-                cell.id = getCellIDFromCoordinate(x, y); 
+                cell.id = getCellIDFromCoordinate(x, y); // Assigns a unique ID to each cell
                 this.element.appendChild(cell);
             }
         }
@@ -286,16 +286,3 @@ class ArenaCleaner {
     }
 }
 
-
-// game setup
-const board = new Board(document.getElementById(`battleship-grid`));
-const duckTray = new DuckTray(document.getElementById(`ducks-container`));
-
-const arena = new Arena(board, duckTray);
-arena.reinitialize();
-
-const randomPlacer = new RandomPlacer(document.getElementById(`place-randomly`), arena);
-randomPlacer.listenButtonClick();
-
-const cleaner = new ArenaCleaner(document.getElementById(`clean-arena`), arena)
-cleaner.listenButtonClick();

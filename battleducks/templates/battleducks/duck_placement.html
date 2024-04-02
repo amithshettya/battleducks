@@ -5,23 +5,44 @@
     <title>Duck placement</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'battleducks/room.css' %}">
-    <link rel="stylesheet" href="{% static 'battleducks/duck_placement.css' %}">
-    <script src="{% static 'battleducks/duck_placement.js' %}" type="text/javascript"></script>
+    <script src="{% static 'battleducks/duck_placement/arena_cleaner.js' %}" type="text/javascript"></script>
+    <script src="{% static 'battleducks/duck_placement/arena.js' %}" type="text/javascript"></script>
+    <script src="{% static 'battleducks/duck_placement/board.js' %}" type="text/javascript"></script>
+    <script src="{% static 'battleducks/duck_placement/duck_tray.js' %}" type="text/javascript"></script>
+    <script src="{% static 'battleducks/duck_placement/duck.js' %}" type="text/javascript"></script>
+    <script src="{% static 'battleducks/duck_placement/random_duck_placer.js' %}" type="text/javascript"></script>
     <script src="{% static 'battleducks/room.js' %}" type="text/javascript"></script>
 </head>
 <body>
-    <div class="game-board">
-        <div>
+    <div id="game">
+        <div class="game-component">
             <h3>Your Board</h3>
-            <div id="battleship-grid" class="battleship-grid"></div>
+            <div id="battleship-grid" class="battleship-grid neumorphic-inner"></div>
         </div>
-        <div>
+        <div class="game-component">
             <h3>Your Ducks</h3>
+            <button id="place-randomly" class="neumorphic red-button"> Place Randomly </button>
+            <button id="clean-arena" class="neumorphic red-button"> Clean Placement </button>
             <div id="ducks-container"></div>
         </div>
+  
+
     </div>
     <script>
-        window.onload = setUpDuckPlacement;
+        // move code in js to here
+        window.onload = function() {
+            const board = new Board(document.getElementById(`battleship-grid`));
+            const duckTray = new DuckTray(document.getElementById(`ducks-container`));
+
+            const arena = new Arena(board, duckTray);
+            arena.reinitialize();
+
+            const randomPlacer = new RandomPlacer(document.getElementById(`place-randomly`), arena);
+            randomPlacer.listenButtonClick();
+
+            const cleaner = new ArenaCleaner(document.getElementById(`clean-arena`), arena)
+            cleaner.listenButtonClick();
+        };
     </script>
 </body>
 </html>

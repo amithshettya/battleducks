@@ -12,18 +12,84 @@
     font-style: italic;
 }
 
+body {
+  background-color: var(--light-blue);
+  font-family: 'Inter', sans-serif;
+  color: hsl(0 0% 30% / 1);
+}
+
+:root {
+  --unit-size: 2em;
+  --normal-width: 1;
+  --normal-height: 2;
+  --chubby-width: 2;
+  --chubby-height: 2;
+  --long-width: 2;
+  --long-height: 6;
+  --wide-width: 4;
+  --wide-height: 6;
+  --very-long-width: 2;
+  --very-long-height: 8;
+  cursor: move;
+  z-index: 10;
+
+  --light-blue: hsla(187, 40%, 76%, 1);
+  --dark-blue: hsla(187, 40%, 70%, 1);
+  --light-red: hsla(7, 40%, 80%, 1);
+  --super-light-red: hsla(7, 40%, 80%, 1);
+}
+
+.duck.normal {
+  width: calc( var(--unit-size)  * var(--normal-width));
+  height: calc( var(--unit-size) * var(--normal-height));
+}  
+
+.duck.chubby {
+  width: calc( (var(--unit-size) + 2px) * var(--chubby-width) - 2px);
+  height: calc( (var(--unit-size) + 2px) * var(--chubby-height) - 2px);
+}
+
+.duck.long {
+  width: calc( var(--unit-size) * var(--long-width) );
+  height: calc( var(--unit-size) * var(--long-height) );
+}
+
+.duck.wide {
+  width: calc( var(--unit-size) * var(--wide-width) );
+  height: calc( var(--unit-size) * var(--wide-height) );
+}
+
+.duck.very-long {
+  width: calc( var(--unit-size) * var(--very-long-width) );
+  height: calc( var(--unit-size) * var(--very-long-height) );
+}
+
+.cell.duck-shadow {
+  background-color: var(--dark-blue);;
+}
+
 .battleship-grid {
   display: grid;
   grid-template-columns: repeat(15, 2em); /* Creates 15 columns */
   grid-template-rows: repeat(15, 2em); /* Creates 15 rows */
-  gap: 2px; /* Space between cells */
+  gap: 0px; /* Space between cells */
+}
+
+img {
+  -webkit-filter: drop-shadow(.5rem .5rem 1rem hsl(0 0% 50% / .5));
+  filter: drop-shadow(.5rem .5rem 1rem hsl(0 0% 50% / .5));
+}
+
+#ducks-container {
+  margin-top: 50px;
 }
 
 .cell {
   width: 2em; /* Cell width */
   height: 2em; /* Cell height */
-  background-color: #f0f0f0; /* Cell default background */
-  border: 1px solid #ddd; /* Cell border */
+  border: 1px solid var(--super-light-red);
+  border-radius: 0.5rem;
+  margin: 0px;
   justify-content: center;
   align-items: center;
   position: relative;
@@ -37,10 +103,42 @@
   background-color: green; /* Background color when clicked */
 }
 
+.game-component {
+  float: left;
+  margin-top: 50px;
+  margin-left: 50px;
+  margin-right: 30px;
+}
 
+.red-button {
+  margin-top: 10px;
+  margin-left: 30px;
+  background-color: var(--light-red);
+  font-family: 'Inter', sans-serif;
+  color: hsl(0 0% 30% / 1);
+}
 
-.game-board {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    grid-gap: 20px;
+.text-area-pad-small {
+  margin-top: 30px;
+}
+
+.neumorphic-inner {
+  border: 0.5rem solid transparent;
+  border-radius: 1rem;
+  --shadow: 
+  -.5rem -.5rem 1rem hsl(0 0% 100% / .75),
+  .5rem .5rem 1rem hsl(0 0% 50% / .5);
+  --innershadow:
+    inset .5rem .5rem 1rem hsl(0 0% 50% / .5),
+    inset -.5rem -.5rem 1rem hsl(0 0% 100% / .75);
+  box-shadow: var(--shadow), var(--innershadow);
+}
+
+.neumorphic {
+  border: 0.5rem solid transparent;
+  border-radius: 1rem;
+  --shadow: 
+  -.5rem -.5rem 1rem hsl(0 0% 100% / .75),
+  .5rem .5rem 1rem hsl(0 0% 50% / .5);
+  box-shadow: var(--shadow);
 }

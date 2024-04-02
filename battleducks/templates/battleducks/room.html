@@ -14,22 +14,23 @@
     <div id="error" class="error"></div>
     <div id="message" class="sub-title">Connecting to WebSocket</div>
 
-    <div class="game-board">
-        <div>
+    <div id="game">
+        <div class="game-component">
             <h3>Your Board</h3>
-            <div id="battleship-grid-self" class="battleship-grid"></div>
+            <div id="battleship-grid-self" class="battleship-grid neumorphic-inner"></div>
         </div>
-        <div>
+        <div class="game-component">
             <h3>Opponent Board</h3>
-            <div id="battleship-grid-opponent" class="battleship-grid"></div>
+            <div id="battleship-grid-opponent" class="battleship-grid neumorphic-inner"></div>
+        </div>
+        <div id="chat-area" class="game-component">
+            <textarea id="chat-log" cols="100" rows="20"  class="neumorphic text-area-pad-small"></textarea><br>
+            <input id="chat-message-input" class="neumorphic text-area-pad-small" type="text" size="100"><br>
+            <input id="chat-message-submit" class="neumorphic red-button" type="button" value="Send">
         </div>
     </div>
 
-    <div id="chat-area">
-        <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-        <input id="chat-message-input" type="text" size="100"><br>
-        <input id="chat-message-submit" type="button" value="Send">
-    </div>
+
 
     <script>
         const roomName = "{{ room_name }}"

@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Duck(models.Model):
-    name=models.CharField(max_length=25)
-    height=models.IntegerField()
-    width=models.IntegerField()
+    name = models.CharField(max_length=25)
+    height = models.IntegerField()
+    width = models.IntegerField()
 
 class Game(models.Model):
     class PlayerTurn(models.IntegerChoices):
@@ -19,6 +19,7 @@ class Game(models.Model):
     
     player1 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="p1_games")
     player2 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="p2_games")
+    room_code = models.CharField(max_length=4)
     player_turn = models.IntegerField(
         choices=PlayerTurn.choices,
         default=PlayerTurn.PLAYER_ONE,

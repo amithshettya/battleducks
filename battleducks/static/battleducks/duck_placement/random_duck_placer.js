@@ -18,21 +18,21 @@ class RandomPlacer {
         // might overlap ducks. To prevent this, we will retry until we don't have an overlap.
         // What if there is no place to place duck? This could cause an infinte loop. To prevent 
         // this, a timeout of one second is added to prevent retrying after one second.
+        const ducks = Array.from(this.arena.duckTray.element.children)
         while(Date.now() < endTime) {
-            const ducks = Array.from(this.arena.duckTray.element.children)
             if(ducks.length == 0)
                 return;
             
-            const cells = Array.from(this.arena.board.element.children)
+            const cells = this.arena.board.getCells()
             const randomIndex = Math.floor(Math.random() * cells.length);
             const cell = cells[randomIndex];
             
-            const duck = ducks.pop();
-            const size = getSizeFromImageElement(duck);
-            if(this.arena.board.isDuckPlacable(cell.id, size)) {
+            const duckElement = ducks.pop();
+            const duck = new Duck(duckElement);
+            if(this.arena.board.isDuckPlacable(cell, duck)) {
                 this.arena.board.dropDuck(cell, duck);
             } else {
-                ducks.push(duck);
+                ducks.push(duckElement);
             }
         }
     }

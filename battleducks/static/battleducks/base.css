@@ -39,3 +39,16 @@ label {
     font-size: x-large;
     color:red;
 }
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    width: 100vw;
+    height: 10vh;
+    background-color: lightgreen;
+    padding: 0;
+    margin: 0;
+}

@@ -17,8 +17,8 @@ class Game(models.Model):
         GUESS = 2, "Guessing Phase",
         END = 3, "End"
     
-    player1_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name="p1_games")
-    player2_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name="p2_games")
+    player1 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="p1_games")
+    player2 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="p2_games")
     player_turn = models.IntegerField(
         choices=PlayerTurn.choices,
         default=PlayerTurn.PLAYER_ONE,
@@ -37,11 +37,11 @@ class Player(models.Model):
         User,
         on_delete=models.CASCADE
     )
-    wins = models.IntegerField()
-    losses = models.IntegerField()
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
 
 class CellGuesses(models.Model):
-    game_id = models.ForeignKey(Game, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.PROTECT)
     # cell grid location
     x = models.IntegerField()
@@ -58,8 +58,8 @@ class InGameDuck(models.Model):
         ALIVE = 1, "Alive",
         DEAD = 2, "DEAD",
     
-    game_id = models.ForeignKey(Game, on_delete=models.CASCADE) #When game is deleted, clean up the ducks
-    duck_id = models.ForeignKey(Duck, on_delete=models.CASCADE) #Cascades since if a duck type is removed, should no longer be used in games.
+    game = models.ForeignKey(Game, on_delete=models.CASCADE) #When game is deleted, clean up the ducks
+    duck = models.ForeignKey(Duck, on_delete=models.CASCADE) #Cascades since if a duck type is removed, should no longer be used in games.
     owner = models.ForeignKey(User, on_delete=models.PROTECT)
     orientation = models.IntegerField(
         choices=DuckOrientation.choices,
@@ -72,5 +72,5 @@ class InGameDuck(models.Model):
         verbose_name="Duck Status"
     )
     # x,y locations are the top left corner of the duck
-    x = models.IntegerField()
-    y = models.IntegerField()
+    x = models.IntegerField(default=-1)
+    y = models.IntegerField(default=-1)

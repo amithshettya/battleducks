@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "social_django",
-    "battleducks"
+    "battleducks.apps.BattleducksConfig"
 ]
 
 MIDDLEWARE = [

@@ -20,10 +20,10 @@ class DuckTray {
 
     storeDucksFromDuckSizes(duckSizes) {
         const ducks = [];
-        for(const size of duckSizes) {
-            const element = document.createElement('img')
+        for(const size in duckSizes) {
+            const element = document.createElement('div');
+            element.setAttribute('data-size', size);
             const duck = new Duck(element);
-            duck.resize(size);
             ducks.push(duck);
         }
         this.addDucks(ducks);

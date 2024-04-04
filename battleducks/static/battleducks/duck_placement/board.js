@@ -34,6 +34,8 @@ class Board {
     }
 
     dropDuck(cell, movingDuck) {
+        if(!this.isDuckPlacable(cell.id, movingDuck)) 
+            return;
         // set the location of the duck with its size
         movingDuck.element.setAttribute("data-cell-id", cell.id);
 

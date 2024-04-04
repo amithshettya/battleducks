@@ -29,7 +29,7 @@ class RandomPlacer {
             
             const duckElement = ducks.pop();
             const duck = new Duck(duckElement);
-            if(this.arena.board.isDuckPlacable(cell, duck)) {
+            if(this.arena.board.isDuckPlacable(cell.id, duck)) {
                 this.arena.board.dropDuck(cell, duck);
             } else {
                 ducks.push(duckElement);

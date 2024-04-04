@@ -55,8 +55,10 @@ class ChatConsumer(WebsocketConsumer):
 
         if action == 'chat':
             message = data["message"]
+            user_first_name= data["user_first_name"]
+            user_last_name = data["user_last_name"]
             async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name, {"type": "chat_message", "message": message}
+                self.room_group_name, {"type": "chat_message", "message": message, "user_first_name": user_first_name, "user_last_name": user_last_name}
             )
             return
 
@@ -66,9 +68,10 @@ class ChatConsumer(WebsocketConsumer):
     # # Receive message from room group
     def chat_message(self, event):
         message = event["message"]
-
+        user_first_name = event["user_first_name"]
+        user_last_name = event["user_last_name"]
         # Send message to WebSocket
-        self.send(text_data=json.dumps({"eventType": "chat", "message": message}))
+        self.send(text_data=json.dumps({"eventType": "chat", "message": message, "user_first_name": user_first_name, "user_last_name": user_last_name}))
 
     def shoot_duck(self, event):
         # send to everyone else than the sender

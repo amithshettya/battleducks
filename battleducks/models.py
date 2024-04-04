@@ -13,13 +13,14 @@ class Game(models.Model):
         PLAYER_TWO = 2, "Player2"
 
     class GamePhase(models.IntegerChoices):
-        PLACEMENT = 1, "Placement Phase",
-        GUESS = 2, "Guessing Phase",
-        END = 3, "End"
+        LOBBY = 1, "Lobby",
+        PLACEMENT = 2, "Placement Phase",
+        GUESS = 3, "Guessing Phase",
+        END = 4, "End"
     
     player1 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="p1_games")
-    player2 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="p2_games")
-    room_code = models.CharField(max_length=4)
+    player2 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="p2_games", null=True)
+    room_code = models.CharField(max_length=4, unique=True, null=True)
     player_turn = models.IntegerField(
         choices=PlayerTurn.choices,
         default=PlayerTurn.PLAYER_ONE,
@@ -27,7 +28,7 @@ class Game(models.Model):
     )
     game_phase = models.IntegerField(
         choices=GamePhase.choices,
-        default=GamePhase.PLACEMENT,
+        default=GamePhase.LOBBY,
         verbose_name="Game Phase"
     )
     ducks = models.ManyToManyField(Duck, through='InGameDuck')

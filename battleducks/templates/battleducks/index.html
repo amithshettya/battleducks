@@ -45,7 +45,13 @@
         What chat room would you like to enter?<br>
         <input id="room-name-input" type="text" size="100"><br>
         <input id="room-name-submit" type="button" value="Enter">
-        <div class="error">{{ room_error }}</div>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
     </div>
 
     <script>

@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from battleducks.models import Game
@@ -22,7 +24,20 @@ def login(request):
 
 @login_required
 def room(request, room_name):
-    return render(request, "battleducks/room.html", {"room_name": room_name})
+    # Check that room exists
+    room_name = room_name.upper()
+    game = get_object_or_404(Game, room_code=room_name)
+    # Does this game have a second player yet?
+    if request.user == game.player1 or request.user == game.player2:
+        return render(request, "battleducks/room.html", {"room_name": room_name})
+    else:
+        # Check Player2 status
+        if game.player2 != None:
+            raise PermissionDenied()
+        else:
+            game.player2 = request.user
+            game.save()
+            return render(request, "battleducks/room.html", {"room_name": room_name})
 
 @login_required
 def duck_placement(request, room_name, user_id):

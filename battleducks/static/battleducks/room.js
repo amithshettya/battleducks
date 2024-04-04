@@ -44,8 +44,7 @@ function connectToServer() {
 }
 
 function handleChatEvent(data) {
-    const chatMessage = `${data.user_first_name} ${data.user_last_name} : ${data.message}`
-    document.getElementById('chat-log').value += (chatMessage + '\n');
+    document.getElementById('chat-log').value += (data.message + '\n');
 }
 
 function handleShootEvent(data) {
@@ -118,7 +117,7 @@ function setupChat(socket) {
     document.getElementById('chat-message-submit').onclick = function (e) {
         const messageInputDom = document.getElementById('chat-message-input');
         const message = messageInputDom.value;
-        const data = {"action": "chat", "message": message, "user_first_name": user_first_name, "user_last_name": user_last_name}
+        const data = {"action": "chat", "message": message}
         socket.send(JSON.stringify(data))
         messageInputDom.value = '';
     };

@@ -98,10 +98,6 @@ class Board {
             if(cell.classList.contains("blue-shadow")){
                 cell.classList.remove("blue-shadow");
             }
-
-            if(cell.classList.contains("red-shadow")){
-                cell.classList.remove("red-shadow");
-            }
         };
     }
 

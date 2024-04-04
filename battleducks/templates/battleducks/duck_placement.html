@@ -30,7 +30,7 @@
     </div>
     <script>
         // move code in js to here
-        // window.onload = function() {
+        window.onload = function() {
             const board = new Board(document.getElementById(`battleship-grid`));
             const duckTray = new DuckTray(document.getElementById(`ducks-tray`));
 
@@ -42,7 +42,7 @@
 
             const cleaner = new ArenaCleaner(document.getElementById(`clean-arena`), arena)
             cleaner.listenButtonClick();
-        // };
+        };
     </script>
 </body>
 </html>

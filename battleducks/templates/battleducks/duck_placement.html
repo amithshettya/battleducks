@@ -23,16 +23,16 @@
             <h3>Your Ducks</h3>
             <button id="place-randomly" class="neumorphic red-button"> Place Randomly </button>
             <button id="clean-arena" class="neumorphic red-button"> Clean Placement </button>
-            <div id="ducks-container"></div>
+            <div id="ducks-tray"></div>
         </div>
   
 
     </div>
     <script>
         // move code in js to here
-        window.onload = function() {
+        // window.onload = function() {
             const board = new Board(document.getElementById(`battleship-grid`));
-            const duckTray = new DuckTray(document.getElementById(`ducks-container`));
+            const duckTray = new DuckTray(document.getElementById(`ducks-tray`));
 
             const arena = new Arena(board, duckTray);
             arena.reinitialize();
@@ -42,7 +42,7 @@
 
             const cleaner = new ArenaCleaner(document.getElementById(`clean-arena`), arena)
             cleaner.listenButtonClick();
-        };
+        // };
     </script>
 </body>
 </html>

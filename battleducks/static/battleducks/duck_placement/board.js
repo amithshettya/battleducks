@@ -17,54 +17,48 @@ class Board {
 
     initializeDragEvents(arena) {
         const duckCells = Array.from(this.element.children);
-
         for(let cell of duckCells) {
             cell.addEventListener('dragover', (e) => {
                 e.preventDefault();
-                this.clearDuckShadow();
-
-                const cell = e.target;
-                if(this.isDuckPlacable(cell, arena.movingDuck)) {
-                    this.showShadow(cell, arena.movingDuck);
-                }
+                this.updateShadow(e.target.id, arena.movingDuck);
             });
 
             cell.addEventListener('drop', (e) => {
-                this.clearDuckShadow();
-
-                const cell = e.target;
-                if(this.isDuckPlacable(cell, arena.movingDuck)) {
-                    this.dropDuck(cell, arena.movingDuck);
-                }
+                this.dropDuck(e.target, arena.movingDuck);
             });
 
             cell.addEventListener('dragend', () => {
-              this.clearDuckShadow();
+                this.updateShadow(e.target.id, arena.movingDuck);
             });          
         }
     }
 
     dropDuck(cell, movingDuck) {
-        movingDuck.disableDragging();
+        if(!this.isDuckPlacable(cell.id, movingDuck)) 
+            return;
+        // set the location of the duck with its size
+        movingDuck.element.setAttribute("data-cell-id", cell.id);
 
         movingDuck.rePositionCSSAbsolute(
             `${cell.getBoundingClientRect().top}px`,
             `${cell.getBoundingClientRect().left}px`
         )
- 
+
+        this.updateShadow(cell.id, movingDuck)
+        
         this.element.appendChild(movingDuck.element);
-
-        this.clearDuckShadow();
-
-        // set the location of the duck with its size
-        movingDuck.element.setAttribute("data-cell-id", cell.id);
     }
 
-    isDuckPlacable(cell, duck) {
-        const coordinate = this.getCoordinateFromCellID(cell.id);
-   
-        const coordinates = this.getDuckCoordinates(coordinate.x, coordinate.y, duck);
-     
+    updateShadow(cellID, duck) {
+        this.clearDuckShadow();
+        if(this.isDuckPlacable(cellID, duck)) {
+            this.showShadow(cellID, duck, "blue-shadow");
+        }
+    }
+
+    isDuckPlacable(cellID, duck) {
+        const coordinate = this.getCoordinateFromCellID(cellID);
+        const coordinates = duck.getDuckCoordinates(coordinate.x, coordinate.y);
         return this.isDuckInBound(coordinates) && !this.isDuckOverLapping(coordinates);
     }
   
@@ -83,7 +77,6 @@ class Board {
     isDuckOverLapping(newDuckCoordinates) {        
         const duckCoordinates = this.getPlacedDucksCoordinates();
 
-
         for(let newDuckCoordinate of newDuckCoordinates) {
             for(const duck in duckCoordinates) {
                 for(let coordinate of duckCoordinates[duck]) {
@@ -99,50 +92,30 @@ class Board {
         return false;
     }
   
-    getDuckCoordinates(refX, refY, duck) {
-        const size = duck.size();
-        const width = getComputedStyle(document.documentElement).getPropertyValue('--'+size+'-width').trim();
-        const length = getComputedStyle(document.documentElement).getPropertyValue('--'+size+'-height').trim();
-        const coordinates = [];
-        for(let w = 0; w < width; w++) {
-            for(let l = 0; l < length; l++) {
-                coordinates.push({
-                    x: refX + w,
-                    y: refY + l,
-                })
-            }
-        }
-        return coordinates;
-    }
-  
     clearDuckShadow() {
         const duckCells = this.getCells()
         for(let cell of duckCells) {
-            if(cell.classList.contains("duck-shadow")){
-                cell.classList.remove("duck-shadow");
+            if(cell.classList.contains("blue-shadow")){
+                cell.classList.remove("blue-shadow");
             }
         };
     }
 
-    showShadow(cell, duck) {
-        const cell_id = cell.id;
-        const coordinate = this.getCoordinateFromCellID(cell.id);
+    showShadow(cellID, duck, shadow_color) {
+       
+        const coordinate = this.getCoordinateFromCellID(cellID);
         
-        const duckCoordinates = this.getDuckCoordinates(coordinate.x, coordinate.y, duck);
+        const duckCoordinates = duck.getDuckCoordinates(coordinate.x, coordinate.y);
         
-        if(!(this.isDuckInBound(duckCoordinates) && !this.isDuckOverLapping(duckCoordinates))) {
-            return;
-        }
-      
         const cells = this.getCells()
         for(let cell of cells) {
             for(let duckCoordinate of duckCoordinates)  {
-                const cellCoordinate = this.getCoordinateFromCellID(cell.id)
+                const cellCoordinate = this.getCoordinateFromCellID(cell.id);
                 if(
                     cellCoordinate.x === duckCoordinate.x &&
                     cellCoordinate.y === duckCoordinate.y
                 ) {
-                    cell.classList.add("duck-shadow");
+                    cell.classList.add(shadow_color);
                 }
             };
         };
@@ -175,7 +148,7 @@ class Board {
 
         const ducks = []
         for(let children of childrens) {
-            if(children.classList.contains("duck"))
+            if(children.classList.contains("duck-container"))
                 ducks.push(new Duck(children));
         }
         return ducks;
@@ -188,7 +161,7 @@ class Board {
         for(let duck of ducks) {
             const cell_id = duck.element.getAttribute("data-cell-id");
             const cellCoordinate = this.getCoordinateFromCellID(cell_id);
-            duckCoordinates[duck.size()] = this.getDuckCoordinates(cellCoordinate.x, cellCoordinate.y, duck)
+            duckCoordinates[duck.size()] = duck.getDuckCoordinates(cellCoordinate.x, cellCoordinate.y)
         }
         
         return duckCoordinates;

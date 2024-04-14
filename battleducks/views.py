@@ -27,6 +27,7 @@ def room(request, room_name):
     # Check that room exists
     room_name = room_name.upper()
     game = get_object_or_404(Game, room_code=room_name)
+    
     # Does this game have a second player yet?
     if request.user == game.player1 or request.user == game.player2:
         return render(request, "battleducks/room.html", {"room_name": room_name})
@@ -40,12 +41,12 @@ def room(request, room_name):
             return render(request, "battleducks/room.html", {"room_name": room_name})
 
 @login_required
-def duck_placement(request, room_name, user_id):
+def place_ducks(request, room_name, user_id):
     context = {
         "room_name": room_name,
         "user_id": user_id, 
     }
-    return render(request, "battleducks/duck_placement.html", context)
+    return render(request, "battleducks/place_ducks.html", context)
 
 @login_required
 def create_room(request):

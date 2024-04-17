@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'battleducks/base.css' %}">
+    {% block css_and_script  %}
+    {% endblock %}
+</head>
+<body>
+    <div class="header">
+        <div class="user-info">
+            <div class="dropdown">
+                <img style="border-radius: 50%; height: 2em;" src="{{ profile_pic }}" alt="User profile picture"><br>
+                <div class="dropdown-content">
+                    {{user.first_name}} {{user.last_name}} <br>
+                    <form action="{% url 'logout' %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block content  %}
+    {% endblock %}
+</body>
+</html>

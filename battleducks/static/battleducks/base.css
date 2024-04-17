@@ -26,12 +26,13 @@ label {
 }
 
 .title {
+    font-family: "Comic Sans MS", serif;
     font-size: xx-large;
     font-weight: bolder;
-    padding-bottom: 5vw;
 }
 
 .sub-title {
+    font-family: "Comic Sans MS", serif;
     font-size: large;
 }
 

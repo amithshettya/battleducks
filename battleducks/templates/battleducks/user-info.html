@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard</title>
+    {% block title %}
+    {%  endblock %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'battleducks/base.css' %}">
     {% block css_and_script  %}
@@ -11,6 +12,9 @@
 </head>
 <body>
     <div class="header">
+        <div class="title">War of The Ducks</div>
+        <a href="{% url 'index' %}" class="nav-link">Home</a>
+        <a href="{% url 'leaderboard' %}" class="nav-link">Leaderboard</a>
         <div class="user-info">
             <div class="dropdown">
                 <img style="border-radius: 50%; height: 2em;" src="{{ profile_pic }}" alt="User profile picture"><br>

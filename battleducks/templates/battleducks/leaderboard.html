@@ -1,6 +1,10 @@
 {% extends "battleducks/user-info.html" %}
 
 
+{% block title %}
+    <title>Leaderboard</title>
+{%  endblock %}
+
 {% block css_and_script  %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'battleducks/leaderboard.css' %}">

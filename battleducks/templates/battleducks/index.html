@@ -1,5 +1,10 @@
 {% extends "battleducks/user-info.html" %}
 
+{% block title %}
+    <title>Lobby</title>
+{%  endblock %}
+
+
 {% block css_and_script %}
 	{% load static %}
     <link rel="stylesheet" href="{% static 'battleducks/base.css' %}">
@@ -15,7 +20,7 @@
         <div>
             <button onclick="createRoom()">Create Room</button>
         </div>
-        What chat room would you like to enter?<br>
+        <p> What chat room would you like to enter? </p>
         <input id="room-name-input" type="text" size="100"><br>
         <input id="room-name-submit" type="button" value="Enter">
         {% if messages %}

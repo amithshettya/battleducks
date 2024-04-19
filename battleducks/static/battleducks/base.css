@@ -15,6 +15,11 @@
 
 input, button {
     font-size: x-large;
+    margin: 10px;
+}
+
+input {
+    width: 10vw;
 }
 
 li {
@@ -26,13 +31,21 @@ label {
 }
 
 .title {
+    font-family: "Comic Sans MS", serif;
     font-size: xx-large;
     font-weight: bolder;
-    padding-bottom: 5vw;
+    padding: 1vw;
 }
 
 .sub-title {
+    font-family: "Comic Sans MS", serif;
     font-size: large;
+}
+
+.nav-link {
+    font-family: "Comic Sans MS", serif;
+    font-size: medium;
+    padding-top: 2vh;
 }
 
 .error {
@@ -51,4 +64,7 @@ body {
     background-color: lightgreen;
     padding: 0;
     margin: 0;
+    display: grid;
+    grid-template-columns: 60vw auto auto auto;
+    align-items: center;
 }

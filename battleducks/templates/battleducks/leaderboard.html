@@ -1,0 +1,42 @@
+{% extends "battleducks/user-info.html" %}
+
+
+{% block title %}
+    <title>Leaderboard</title>
+{%  endblock %}
+
+{% block css_and_script  %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'battleducks/leaderboard.css' %}">
+    <link rel="stylesheet" href="{% static 'battleducks/user-info.css' %}">
+{% endblock %}
+
+{% block content %}
+     <div class="center">
+        <h1 class="title">Leaderboard</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th class="center">Rank</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th class="center">Wins</th>
+                    <th class="center">Losses</th>
+                    <th class="center">Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in players %}
+                <tr>
+                    <td class="center">{{ forloop.counter }}</td>
+                    <td>{{ player.user.first_name }}</td>
+                    <td>{{ player.user.last_name }}</td>
+                    <td class="center">{{ player.wins }}</td>
+                    <td class="center">{{ player.losses }}</td>
+                    <td class="center">{{ player.score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

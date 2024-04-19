@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db.models import F
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from battleducks.models import Game
+from battleducks.models import Game, Player
 
 import json
 
@@ -15,9 +16,8 @@ ROOM_CODE_LENGTH = 4
 
 @login_required
 def index(request):
-    ed = request.user.social_auth.get(provider='google-oauth2').extra_data
-    profile_pic = ed['picture']
-    return render(request, "battleducks/index.html", {'extra_data': ed, 'profile_pic': profile_pic})
+    context = get_user_info(request)
+    return render(request, "battleducks/index.html", context)
 
 def login(request):
     return render(request, "battleducks/login.html")
@@ -74,3 +74,20 @@ def _my_json_error_response(message, status=200):
     # You can create your JSON by constructing the string representation yourself (or just use json.dumps)
     response_json = '{"error": "' + message + '"}'
     return HttpResponse(response_json, content_type='application/json', status=status)
+
+@login_required
+def leaderboard(request):
+    user_info = get_user_info(request)
+    players = Player.objects.all().annotate(score=F('wins') - F('losses')).order_by('-score')
+    context = {
+        'extra_data': user_info['extra_data'],
+        'profile_pic': user_info['profile_pic'],
+        'players': players
+    }
+    return render(request, 'battleducks/leaderboard.html', context)
+
+
+def get_user_info(request):
+    ed = request.user.social_auth.get(provider='google-oauth2').extra_data
+    profile_pic = ed['picture']
+    return {'extra_data': ed, 'profile_pic': profile_pic}

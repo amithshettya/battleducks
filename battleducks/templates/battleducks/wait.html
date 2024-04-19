@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waiting</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'battleducks/wait.css' %}">
+</head>
+<body>
+    {% if room_code %}
+    <h2>Share room code: {{ room_code }}</h2>
+    {% endif %}
+<div class="loader"></div>
+<p id="wait-text" >Waiting for other player...</p>
+</body>
+</html>
+
+<script>
+    const pollDurationMilliSeconds = 1000;
+    const url = window.location.href + '/game_state';
+    setInterval(() => {
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.state !== "{{state}}") {
+                window.location.reload();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }, pollDurationMilliSeconds);
+</script>

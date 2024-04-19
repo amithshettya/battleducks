@@ -166,4 +166,22 @@ class Board {
         
         return duckCoordinates;
     }
+
+    getPlacedDucksInfo() {
+        const duckInfo  = {}
+        const ducks = this.getDucks()
+        
+        for(let duck of ducks) {
+            const cell_id = duck.element.getAttribute("data-cell-id");
+            const cellCoordinate = this.getCoordinateFromCellID(cell_id);
+            duckInfo[duck.size()] = {
+               "x": cellCoordinate.x, 
+               "y": cellCoordinate.y,
+               "orientation": duck.getOrientation(),
+            }
+            
+        }
+        
+        return duckInfo;
+    }
 }

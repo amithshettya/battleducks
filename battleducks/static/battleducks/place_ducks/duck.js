@@ -196,4 +196,24 @@ class Duck {
 
         this.duck.style.transform = newState;
     }
+
+    getOrientation() {
+        const currentState = this.duck.style.transform;
+
+        switch(currentState) {
+            case "scaleY(1)":
+                return "NORTH";
+
+            case "scaleX(1)": 
+                return "EAST";
+
+            case "scaleY(-1)":
+                return "SOUTH";
+            
+            case "scaleX(-1)":
+                return "WEST";
+        }
+
+       return "NORTH";
+    }
 }

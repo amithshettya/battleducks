@@ -14,6 +14,10 @@ import json
 ALLOWED_ROOM_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ROOM_CODE_LENGTH = 4
 
+# DEBUG, this is for testing. Setting this value bypasses player syncronization
+BYPASS_PLAYER_WAIT = False
+
+
 @login_required
 def index(request):
     context = get_user_info(request)
@@ -35,7 +39,7 @@ def room(request, room_name):
     if game.game_phase == Game.GamePhase.LOBBY:
         # If the player is not in game
         if (
-            True or # TODO: Remove this! added for testing
+            BYPASS_PLAYER_WAIT or 
             request.user != game.player1 and request.user != game.player2
         ):
             # game is full
@@ -46,12 +50,10 @@ def room(request, room_name):
             game.player2 = request.user
             game.save()
         
-        return render(request, "battleducks/wait.html", {"state": "LOBBY"})
+        return render(request, "battleducks/wait.html", {"state": "LOBBY", "room_code": room_name})
 
     if game.game_phase == Game.GamePhase.PLACEMENT:
-        print("placement phase")
         if didUserPlaceDucks(request.user, game):
-            print("ducks plcaed?")
             return render(request, "battleducks/wait.html", {"state": "PLACEMENT"})
         
         return render(request, "battleducks/place_ducks.html", context)
@@ -74,15 +76,15 @@ def get_game_state(request, room_name):
     # update game state
     if game.game_phase ==  Game.GamePhase.LOBBY:
         if (
-            True or # TODO: remove added for testing
-            game.Player2 != None 
+            BYPASS_PLAYER_WAIT or 
+            game.player2 != None 
         ):
             game.game_phase = Game.GamePhase.PLACEMENT
             game.save()
     elif game.game_phase == Game.GamePhase.PLACEMENT:
         if (
-            didUserPlaceDucks(game.player1, game) or didUserPlaceDucks(game.player2, game) # TODO: remove added for testing
-            # didUserPlaceDucks(game.Player1, game) and didUserPlaceDucks(game.Player2, game)
+            (BYPASS_PLAYER_WAIT and (didUserPlaceDucks(game.player1, game) or didUserPlaceDucks(game.player2, game)))
+            or (didUserPlaceDucks(game.player1, game) and didUserPlaceDucks(game.player2, game))
         ):
             game.game_phase = Game.GamePhase.GUESS
             game.save()
@@ -134,7 +136,6 @@ def save_ducks(request, room_name):
 
     return HttpResponse("Ducks are stored", status=200)
     
-
 @login_required
 def create_room(request):
     if request.method != 'POST':

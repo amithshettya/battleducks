@@ -11,24 +11,27 @@
     {% endblock %}
 </head>
 <body>
-    <div class="header">
-        <div class="title">War of The Ducks</div>
-        <a href="{% url 'index' %}" class="nav-link">Home</a>
-        <a href="{% url 'leaderboard' %}" class="nav-link">Leaderboard</a>
-        <div class="user-info">
-            <div class="dropdown">
-                <img style="border-radius: 50%; height: 2em;" src="{{ profile_pic }}" alt="User profile picture"><br>
-                <div class="dropdown-content">
-                    {{user.first_name}} {{user.last_name}} <br>
-                    <form action="{% url 'logout' %}" method="POST">
-                        {% csrf_token %}
-                        <button type="submit">Logout</button>
-                    </form>
+    <div class="bg-gray-100 flex items-center justify-center h-screen">
+        <div class="header">
+            <div class="title">War of The Ducks</div>
+            <a href="{% url 'index' %}" class="nav-link">Home</a>
+            <a href="{% url 'leaderboard' %}" class="nav-link">Leaderboard</a>
+            <div class="user-info">
+                <div class="dropdown">
+                    <img style="border-radius: 50%; height: 2em;" src="{{ profile_pic }}" alt="User profile picture"><br>
+                    <div class="dropdown-content">
+                        {{user.first_name}} {{user.last_name}} <br>
+                        <form action="{% url 'logout' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+        {% block content  %}
+        {% endblock %}
     </div>
-    {% block content  %}
-    {% endblock %}
+
 </body>
 </html>

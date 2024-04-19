@@ -6,10 +6,26 @@
     <title>Waiting</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'battleducks/wait.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
+
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifford: '#da373d',
+          }
+        }
+      }
+    }
+  </script>
+
+
 <body>
     {% if room_code %}
-    <h2>Share room code: {{ room_code }}</h2>
+    <h2 class="text-3xl font-bold text-clifford">Share room code: {{ room_code }}</h2>
     {% endif %}
 <div class="loader"></div>
 <p id="wait-text" >Waiting for other player...</p>

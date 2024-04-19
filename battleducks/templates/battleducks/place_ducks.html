@@ -11,6 +11,7 @@
     <script src="{% static 'battleducks/place_ducks/duck_tray.js' %}" type="text/javascript"></script>
     <script src="{% static 'battleducks/place_ducks/duck.js' %}" type="text/javascript"></script>
     <script src="{% static 'battleducks/place_ducks/random_duck_placer.js' %}" type="text/javascript"></script>
+    <script src="{% static 'battleducks/place_ducks/play_game.js' %}" type="text/javascript"></script>
     <script src="{% static 'battleducks/room.js' %}" type="text/javascript"></script>
 </head>
 <body>
@@ -23,6 +24,7 @@
             <h3>Your Ducks</h3>
             <button id="place-randomly" class="neumorphic red-button"> Place Randomly </button>
             <button id="clean-arena" class="neumorphic red-button"> Clean Placement </button>
+            <button id="ready-to-play" class="neumorphic red-button"> Ready to play </button>
             <div id="ducks-tray"></div>
         </div>
   
@@ -42,6 +44,9 @@
 
             const cleaner = new ArenaCleaner(document.getElementById(`clean-arena`), arena)
             cleaner.listenButtonClick();
+
+            const starter = new GameStarter(document.getElementById(`ready-to-play`), arena)
+            starter.listenButtonClick();
         };
     </script>
 </body>

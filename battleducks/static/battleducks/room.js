@@ -12,19 +12,20 @@ function connectToServer() {
     let url = `${wsProtocol}//${window.location.host}/ws/battleducks/${roomName}`
     let socket = new WebSocket(url)
 
+    
     // Handle any errors that occur.
     socket.onerror = function (error) {
-        displayMessage("WebSocket Error: " + error)
+        displayMessage("WebSocket Error", error, "red")
     }
 
     // Show a connected message when the WebSocket is opened.
     socket.onopen = function (event) {
-        displayMessage("WebSocket Connected")
+        displayMessage("WebSocket Connected", "", "green")
     }
 
     // Show a disconnected message when the WebSocket is closed.
     socket.onclose = function (event) {
-        displayMessage("WebSocket Disconnected")
+        displayMessage("WebSocket Disconnected", "", "red")
     }
 
     // Handle messages received from the server.
@@ -44,8 +45,35 @@ function connectToServer() {
 }
 
 function handleChatEvent(data) {
-    const chatMessage = `${data.user_first_name} ${data.user_last_name} : ${data.message}`
-    document.getElementById('chat-log').value += (chatMessage + '\n');
+    // Function to format the current time as HH:MM
+    function formatTime(date) {
+        return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+    }
+
+    console.log("here")
+    const chatMessage = document.createElement('div');
+
+    // right pad if its my message
+    let padding = "mr-auto";
+    if(data.user_first_name == user_first_name && data.user_last_name == user_last_name) {
+        padding = "ml-auto";
+    }
+    
+
+    chatMessage.innerHTML = `
+        <div class="flex flex-col ${padding} w-full max-w-[320px] leading-1.5 p-4 border-gray-200 bg-gray-50 rounded-e-xl rounded-es-xl dark:bg-gray-700">
+            <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                <span class="text-sm font-semibold text-gray-900 dark:text-white">${data.user_first_name} ${data.user_last_name}</span>
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">${formatTime(new Date())}</span>
+            </div>
+            <p class="text-sm font-normal py-2.5 text-gray-900 dark:text-white">
+            ${data.message}
+            </p>
+        </div>
+    `
+    const chatLog = document.getElementById('chat-log');
+    chatLog.appendChild(chatMessage);
+    console.log("here 2")
 }
 
 function handleShootEvent(data) {
@@ -124,13 +152,11 @@ function setupChat(socket) {
     };
 }
 
-
-function displayError(message) {
-    let errorElement = document.getElementById("error")
-    errorElement.innerHTML = message
-}
-
-function displayMessage(message) {
-    let errorElement = document.getElementById("message")
-    errorElement.innerHTML = message
+function displayMessage(heading, message, color) {
+    let messageElement = document.getElementById("status")
+    messageElement.innerHTML = `
+        <div class="p-4 mb-4 text-sm text-${color}-800 rounded-lg bg-${color}-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+            <span class="font-medium">${heading}</span>${message} 
+        </div>
+    `
 }

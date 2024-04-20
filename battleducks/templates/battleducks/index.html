@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block content %}
-
+<div class="flex items-center justify-center pt-40" >
     <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
         <div class="grid gap-6 mb-6 md:grid-cols-1">
             <button onclick="createRoom()"
@@ -44,7 +44,7 @@
         </ul>
         {% endif %}
     </div>
-
+</div>
     <script>
         let room_url = "{% url 'room' 'code' %}";
 

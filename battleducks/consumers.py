@@ -45,14 +45,15 @@ class ChatConsumer(WebsocketConsumer):
         if action == 'shoot':
             cell_x = data["cell_x"]
             cell_y = data["cell_y"]
+            shooter_user_id = int(data['user_id'])
 
             room_name = self.room_group_name.split('_')[1]
-            self.shooting_by(room_name, data['user_id'], cell_x, cell_y)
-            if self.check_game_winner(room_name, data['user_id']):
+            self.shooting_by(room_name, shooter_user_id, cell_x, cell_y)
+            if self.check_game_winner(room_name, shooter_user_id):
                 room_name = room_name.upper()
                 game = get_object_or_404(Game, room_code=room_name)
                 
-                if game.player1.id == data['user_id']:
+                if game.player1.id == shooter_user_id:
                     user = game.player1
                 else:
                     user = game.player2

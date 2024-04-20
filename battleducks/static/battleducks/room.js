@@ -135,35 +135,12 @@ function placeDucks(response) {
         const element = document.createElement('div');
         element.setAttribute('data-size', duck.size);
         const duckEl = new Duck(element);
-        duckEl.setOrientation(returnDuckTransform(duck.orientation));
+        console.log(duck.orientation)
+        duckEl.setOrientation(duck.orientation);
 
         let cells = board.getCells();
         let cell = cells[duck.x*Board.BOARD_SIZE + duck.y];
-        console.log(cell)
-        console.log(cell.getBoundingClientRect().top)
 
         board.dropDuck(cell, duckEl);
     }
-}
-
-function returnDuckTransform(orientation) {
-    let scale = "scaleY(1)";
-    switch(orientation) {
-        case "NORTH":
-            scale = "scaleY(1)";
-            break;
-        case "EAST":
-            scale = "scaleX(1)";
-            break;
-        case "SOUTH":
-            scale = "scaleY(-1)";
-            break;
-        case "WEST":
-            scale = "scaleX(-1)";
-            break;
-        default:
-            scale = "scaleY(1)";
-    }
-
-    return scale;
 }

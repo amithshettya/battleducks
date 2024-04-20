@@ -219,5 +219,20 @@ class Duck {
 
     setOrientation(orientation) {
         this.duck.style.transform = orientation;
+
+        switch(orientation) {
+            case "scaleY(1)":
+                this.duck.src = Duck.DUCK_SPRITE_VERTICAL;
+                break;
+            case "scaleX(1)": 
+                this.duck.src = Duck.DUCK_SPRITE_HORIZONTAL;
+                break;
+            case "scaleY(-1)":
+                this.duck.src = Duck.DUCK_SPRITE_VERTICAL;
+                break;            
+            case "scaleX(-1)":
+                this.duck.src = Duck.DUCK_SPRITE_HORIZONTAL;
+                break;
+        }
     }
 }

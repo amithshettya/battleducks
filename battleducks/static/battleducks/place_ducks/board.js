@@ -62,9 +62,12 @@ class Board {
         // set the location of the duck with its size
         movingDuck.element.setAttribute("data-cell-id", cell.id);
 
+        const rect = cell.getBoundingClientRect();
+        const doc = document.documentElement;
+
         movingDuck.rePositionCSSAbsolute(
-            `${cell.getBoundingClientRect().top}px`,
-            `${cell.getBoundingClientRect().left}px`
+            `${rect.top + doc.scrollTop}px`,
+            `${rect.left + doc.scrollLeft}px`
         )
 
         this.updateShadow(cell.id, movingDuck)

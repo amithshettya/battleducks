@@ -73,13 +73,12 @@ function handleChatEvent(data) {
     `
     const chatLog = document.getElementById('chat-log');
     chatLog.appendChild(chatMessage);
-    console.log("here 2")
 }
 
 function handleShootEvent(data) {
     const cell_x = data.cell_x
     const cell_y = data.cell_y
-    document.getElementById('chat-log').value += ("Got shot at coordinate: " + cell_x + + " " + cell_y + '\n');
+
     //we will color self board if receive shot event from opponent
     colorShotCell(cell_x, cell_y, "self")
 }
@@ -92,8 +91,8 @@ function setUpGame(socket) {
 function setUpBoard(socket, player) {
     const grid = document.getElementById(`battleship-grid-${player}`);
 
-    for (let i = 0; i < 15; i++) { // 15x15 grid
-        for (let j = 0; j < 15; j++) {
+    for (let j = 0; j < 15; j++) { // 15x15 grid
+        for (let i = 0; i < 15; i++) {
             const cell = document.createElement("div");
             cell.classList.add("cell");
             cell.id = `${player}-cell-${i}-${j}`; // Assigns a unique ID to each cell
@@ -103,12 +102,11 @@ function setUpBoard(socket, player) {
                     colorShotCell(i, j, player)
                     let data = {
                         "action": "shoot",
+                        "user_id": user_id,
                         "cell_x": i,
                         "cell_y": j,
                     }
                     socket.send(JSON.stringify(data))
-                } else {
-                    colorPlacedCell(i, j)
                 }
             });
             grid.appendChild(cell);

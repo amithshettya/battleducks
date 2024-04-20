@@ -95,9 +95,13 @@ function handleChatEvent(data) {
 function handleShootEvent(data) {
     const cell_x = data.cell_x
     const cell_y = data.cell_y
+    let action = "miss";
+    if(data.hit == "yes") {
+        action = "shot";
+    } 
 
     //we will color self board if receive shot event from opponent
-    colorShotCell(cell_x, cell_y, "self")
+    colorShotCell(cell_x, cell_y, "self", action)
     updateShotDuck(cell_x, cell_y)
 }
 
@@ -112,15 +116,15 @@ function setUpBoard(socket, player) {
     return setupBoard
 }
 
-function colorShotCell(cell_x, cell_y, player) {
+function colorShotCell(cell_x, cell_y, player, action) {
     const cellId = `${player}-cell-${cell_x}-${cell_y}`;
     const cell = document.getElementById(cellId)
-    if (!cell.classList.contains("shot")) {
-        cell.classList.remove("placed")
-        cell.classList.add("shot");
-    }
-
+    if (cell.classList.contains("shot")) cell.classList.remove("shot");
+    if (cell.classList.contains("placed")) cell.classList.remove("placed");
+    if (cell.classList.contains("miss")) cell.classList.remove("miss");
     
+    cell.classList.add(action);
+        
 }
 
 function updateShotDuck(x_shot, y_shot) {
@@ -134,7 +138,7 @@ function updateShotDuck(x_shot, y_shot) {
         if(x <= x_shot && x_shot < x + width && y <= y_shot && y_shot < y+height) {
             for(let j=y; j<y+height; j ++){
                 for(let i=x;i<x+width; i++) {
-                    colorShotCell(i, j, "self")
+                    colorShotCell(i, j, "self", "shot")
                 }
             }
         }

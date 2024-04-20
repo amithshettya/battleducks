@@ -68,6 +68,10 @@
   background-color: yellow; /* Background color when clicked */
 }
 
+.cell.miss {
+  background-color: gray;
+}
+
 .add-form {
   padding-top: 20px;
   padding-bottom: 20px;

@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.shortcuts import render, redirect, get_object_or_404
 from battleducks.models import Game, Player, InGameDuck, Duck
+from django.contrib.auth.models import User
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -44,9 +45,29 @@ class ChatConsumer(WebsocketConsumer):
         if action == 'shoot':
             cell_x = data["cell_x"]
             cell_y = data["cell_y"]
+            shooter_user_id = int(data['user_id'])
 
             room_name = self.room_group_name.split('_')[1]
-            self.shooting_by(room_name, data['user_id'], cell_x, cell_y)
+            self.shooting_by(room_name, shooter_user_id, cell_x, cell_y)
+            if self.check_game_winner(room_name, shooter_user_id):
+                room_name = room_name.upper()
+                game = get_object_or_404(Game, room_code=room_name)
+                
+                if game.player1.id == shooter_user_id:
+                    user = game.player1
+                else:
+                    user = game.player2
+
+                name = user.first_name + " " + user.last_name
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        "type": "announcement",
+                        "winner": name,
+                        "sender_channel_name": self.channel_name,
+                    }
+                )
+                return
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -87,6 +108,10 @@ class ChatConsumer(WebsocketConsumer):
 
             # Send message to WebSocket
             self.send(text_data=json.dumps({"eventType": "shoot", "cell_x": cell_x, "cell_y": cell_y}))
+    
+    def announcement(self, event):
+        # Send message to WebSocket
+        self.send(text_data=json.dumps({"eventType": "announcement", "winner": event["winner"]}))
 
 
     def send_error(self, error_message):
@@ -115,6 +140,22 @@ class ChatConsumer(WebsocketConsumer):
             
             if x_ref <= x < x_ref+width and y_ref <= y < y_ref+height:
                 duck.status = InGameDuck.DuckStatus.DEAD
+                print(x, y)
                 duck.save()
-                print("duck died", x_ref, y_ref)
                 return
+    
+    def check_game_winner(self, room_name, user_id):
+        room_name = room_name.upper()
+        game = get_object_or_404(Game, room_code=room_name)
+        
+        if game.player1.id == user_id:
+            opponent = game.player2
+        else:
+            opponent = game.player1
+
+
+        ducks = InGameDuck.objects.filter(game=game, owner=opponent)
+        print([duck.status == InGameDuck.DuckStatus.DEAD for duck in ducks])
+        all_dead = all(duck.status == InGameDuck.DuckStatus.DEAD for duck in ducks)
+
+        return all_dead

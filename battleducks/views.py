@@ -62,7 +62,7 @@ def room(request, room_name):
     if game.game_phase == Game.GamePhase.GUESS:
         return render(request, "battleducks/room.html", context)
     
-    return HttpResponse('Game Over!')
+    return render(request, "battleducks/game_over.html", {})
 
 def get_game_state(request, room_name):
     if request.method != 'GET':

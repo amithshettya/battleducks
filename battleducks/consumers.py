@@ -147,15 +147,31 @@ class ChatConsumer(WebsocketConsumer):
     def check_game_winner(self, room_name, user_id):
         room_name = room_name.upper()
         game = get_object_or_404(Game, room_code=room_name)
+
+        # If the game is already over, there's no need to check here.
+        if game.game_phase == Game.GamePhase.END:
+            return True
         
         if game.player1.id == user_id:
+            winner = Player.objects.get(user=game.player1)
             opponent = game.player2
         else:
+            winner = Player.objects.get(user=game.player2)
             opponent = game.player1
 
 
         ducks = InGameDuck.objects.filter(game=game, owner=opponent)
         print([duck.status == InGameDuck.DuckStatus.DEAD for duck in ducks])
         all_dead = all(duck.status == InGameDuck.DuckStatus.DEAD for duck in ducks)
+
+        # If all ducks are dead, the winner has actually won, update game state and player scores
+        if all_dead:
+            game.game_phase = Game.GamePhase.END
+            winner.wins += 1
+            opponent = Player.objects.get(user=opponent)
+            opponent.losses += 1
+            game.save()
+            winner.save()
+            opponent.save()
 
         return all_dead

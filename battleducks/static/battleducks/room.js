@@ -46,7 +46,8 @@ function connectToServer() {
 
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                 ${data["winner"]} won the game</h5>
-                
+                <a href="/" class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+                style="text-align:center; width:100%; text-decoration:underline;">Home</a>             
                 </div>
             </div>
 

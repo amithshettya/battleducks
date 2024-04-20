@@ -133,7 +133,7 @@ class ChatConsumer(WebsocketConsumer):
             x_ref = duck.x
             y_ref = duck.y
 
-            if orientation == InGameDuck.DuckOrientation.NORTH or orientation.InGameDuck.DuckOrientation.SOUTH:
+            if orientation == InGameDuck.DuckOrientation.NORTH or InGameDuck.DuckOrientation.SOUTH:
                 height, width = duck.duck.height, duck.duck.width
             else:
                 height, width = duck.duck.width, duck.duck.height

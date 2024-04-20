@@ -48,7 +48,7 @@ class ChatConsumer(WebsocketConsumer):
             shooter_user_id = int(data['user_id'])
 
             room_name = self.room_group_name.split('_')[1]
-            self.shooting_by(room_name, shooter_user_id, cell_x, cell_y)
+            shot = self.shooting_by(room_name, shooter_user_id, cell_x, cell_y)
             if self.check_game_winner(room_name, shooter_user_id):
                 room_name = room_name.upper()
                 game = get_object_or_404(Game, room_code=room_name)
@@ -75,7 +75,8 @@ class ChatConsumer(WebsocketConsumer):
                     "type": "shoot_duck",
                     "cell_x": cell_x,
                     "cell_y": cell_y,
-                    "sender_channel_name": self.channel_name
+                    "hit": "yes" if shot else "no",
+                    "sender_channel_name": self.channel_name,
                 }
             )
             return
@@ -105,9 +106,10 @@ class ChatConsumer(WebsocketConsumer):
         if self.channel_name != event['sender_channel_name']:
             cell_x = event["cell_x"]
             cell_y = event["cell_y"]
+            hit = event["hit"]
 
             # Send message to WebSocket
-            self.send(text_data=json.dumps({"eventType": "shoot", "cell_x": cell_x, "cell_y": cell_y}))
+            self.send(text_data=json.dumps({"eventType": "shoot", "cell_x": cell_x, "cell_y": cell_y, "hit": hit}))
     
     def announcement(self, event):
         # Send message to WebSocket
@@ -140,9 +142,10 @@ class ChatConsumer(WebsocketConsumer):
             
             if x_ref <= x < x_ref+width and y_ref <= y < y_ref+height:
                 duck.status = InGameDuck.DuckStatus.DEAD
-                print(x, y)
                 duck.save()
-                return
+                return True
+        
+        return False
     
     def check_game_winner(self, room_name, user_id):
         room_name = room_name.upper()

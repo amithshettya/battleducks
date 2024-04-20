@@ -24,7 +24,7 @@ class Board {
                 cell.addEventListener("click", function () {
                     //send shoot event via websocket
                     if(player === "opponent"){
-                        shootFunction(x, y, player)
+                        shootFunction(x, y, player, "shot")
                         let data = {
                             "action": "shoot",
                             "user_id": user_id,

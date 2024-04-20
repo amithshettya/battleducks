@@ -1,59 +1,10 @@
 :root {
   --unit-size: 2em;
 
-  --light-blue: hsla(187, 40%, 76%, 1);
   --dark-blue: hsla(187, 40%, 70%, 1);
+  --dark-red: hsla(7, 40%, 70%, 1);
 
-  --super-light-red: hsla(7, 40%, 80%, 1);
-  --light-red: hsla(7, 40%, 80%, 1);
-  --dark-red: hsla(7, 40%, 70%, 1)
-}
-
-body {
-  background-color: var(--light-blue);
-  font-family: 'Inter', sans-serif;
-  color: hsl(0 0% 30% / 1);
-}
-
-.neumorphic-inner {
-  border: 0.5rem solid transparent;
-  border-radius: 1rem;
-  --shadow: 
-  -.5rem -.5rem 1rem hsl(0 0% 100% / .75),
-  .5rem .5rem 1rem hsl(0 0% 50% / .5);
-  --innershadow:
-    inset .5rem .5rem 1rem hsl(0 0% 50% / .5),
-    inset -.5rem -.5rem 1rem hsl(0 0% 100% / .75);
-  box-shadow: var(--shadow), var(--innershadow);
-}
-
-.neumorphic {
-  border: 0.5rem solid transparent;
-  border-radius: 1rem;
-  --shadow: 
-  -.5rem -.5rem 1rem hsl(0 0% 100% / .75),
-  .5rem .5rem 1rem hsl(0 0% 50% / .5);
-  box-shadow: var(--shadow);
-}
-
-.game-component {
-  float: left;
-  margin: 50px;
-  max-width: calc(var(--unit-size) * 21);
-}
-
-.red-button {
-  margin: calc(var(--unit-size)* 1);
-  background-color: var(--light-red);
-  font-family: 'Inter', sans-serif;
-  color: hsl(0 0% 30% / 1);
-  float:left;
-  display: block;
-  width: calc(var(--unit-size)* 5);
-}
-
-#chat-area > textarea {
-  margin-bottom: 30px;
+  --yellow: hsla(48, 96%, 53%, 1);
 }
 
 .battleship-grid {
@@ -61,6 +12,7 @@ body {
   grid-template-columns: repeat(15, var(--unit-size)); /* Creates 15 columns */
   grid-template-rows: repeat(15, var(--unit-size)); /* Creates 15 rows */
   gap: 0px; /* Space between cells */
+  width: fit-content;
 }
 
 #ducks-tray {
@@ -92,7 +44,7 @@ body {
 .cell {
   width: 2em; /* Cell width */
   height: 2em; /* Cell height */
-  border: 1px solid var(--super-light-red);
+  border: 1px solid var(--yellow);
   border-radius: 0.5rem;
   margin: 0px;
   justify-content: center;

@@ -15,6 +15,29 @@ class Board {
         }
     }
 
+    drawRoom(socket, player, shootFunction) {
+        for (let y = 0; y < Board.BOARD_SIZE; y++) { // 15x15 grid
+            for (let x = 0; x < Board.BOARD_SIZE; x++) {
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+                cell.id = `${player}-cell-${x}-${y}`; // Assigns a unique ID to each cell
+                cell.addEventListener("click", function () {
+                    //send shoot event via websocket
+                    if(player === "opponent"){
+                        shootFunction(x, y, player)
+                        let data = {
+                            "action": "shoot",
+                            "cell_x": x,
+                            "cell_y": y,
+                        }
+                        socket.send(JSON.stringify(data))
+                    }
+                });
+                this.element.appendChild(cell);
+            }
+        }
+    }
+
     initializeDragEvents(arena) {
         const duckCells = Array.from(this.element.children);
         for(let cell of duckCells) {

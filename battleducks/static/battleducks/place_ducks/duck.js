@@ -216,4 +216,8 @@ class Duck {
 
        return "NORTH";
     }
+
+    setOrientation(orientation) {
+        this.duck.style.transform = orientation;
+    }
 }

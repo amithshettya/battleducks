@@ -1,3 +1,6 @@
+let board;
+let ducks;
+
 function initGameRoom() {
     connectToServer()
 }
@@ -40,6 +43,7 @@ function connectToServer() {
     }
 
     setUpGame(socket)
+    setUpDucks()
     setupChat(socket)
 }
 
@@ -58,34 +62,13 @@ function handleShootEvent(data) {
 
 
 function setUpGame(socket) {
-    setUpBoard(socket, "self")
+    board = setUpBoard(socket, "self")
     setUpBoard(socket, "opponent")
 }
 function setUpBoard(socket, player) {
-    const grid = document.getElementById(`battleship-grid-${player}`);
-
-    for (let i = 0; i < 15; i++) { // 15x15 grid
-        for (let j = 0; j < 15; j++) {
-            const cell = document.createElement("div");
-            cell.classList.add("cell");
-            cell.id = `${player}-cell-${i}-${j}`; // Assigns a unique ID to each cell
-            cell.addEventListener("click", function () {
-                //send shoot event via websocket
-                if(player === "opponent"){
-                    colorShotCell(i, j, player)
-                    let data = {
-                        "action": "shoot",
-                        "cell_x": i,
-                        "cell_y": j,
-                    }
-                    socket.send(JSON.stringify(data))
-                } else {
-                    colorPlacedCell(i, j)
-                }
-            });
-            grid.appendChild(cell);
-        }
-    }
+    let setupBoard = new Board(document.getElementById(`battleship-grid-${player}`));
+    setupBoard.drawRoom(socket, player, colorShotCell)
+    return setupBoard
 }
 
 function colorShotCell(cell_x, cell_y, player) {
@@ -133,4 +116,54 @@ function displayError(message) {
 function displayMessage(message) {
     let errorElement = document.getElementById("message")
     errorElement.innerHTML = message
+}
+
+function setUpDucks() {
+    $.ajax({
+        url: `/battleducks/room/${roomName}/get_my_ducks`,
+        type: "GET",
+        dataType : "json",
+        success: placeDucks,
+        error: displayError
+    });
+}
+
+function placeDucks(response) {
+    let ducks = response;
+    for (let index in ducks) {
+        let duck = ducks[index]
+        const element = document.createElement('div');
+        element.setAttribute('data-size', duck.size);
+        const duckEl = new Duck(element);
+        duckEl.setOrientation(returnDuckTransform(duck.orientation));
+
+        let cells = board.getCells();
+        let cell = cells[duck.x*Board.BOARD_SIZE + duck.y];
+        console.log(cell)
+        console.log(cell.getBoundingClientRect().top)
+
+        board.dropDuck(cell, duckEl);
+    }
+}
+
+function returnDuckTransform(orientation) {
+    let scale = "scaleY(1)";
+    switch(orientation) {
+        case "NORTH":
+            scale = "scaleY(1)";
+            break;
+        case "EAST":
+            scale = "scaleX(1)";
+            break;
+        case "SOUTH":
+            scale = "scaleY(-1)";
+            break;
+        case "WEST":
+            scale = "scaleX(-1)";
+            break;
+        default:
+            scale = "scaleY(1)";
+    }
+
+    return scale;
 }

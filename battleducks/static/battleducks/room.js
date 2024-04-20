@@ -77,13 +77,12 @@ function handleChatEvent(data) {
     `
     const chatLog = document.getElementById('chat-log');
     chatLog.appendChild(chatMessage);
-    console.log("here 2")
 }
 
 function handleShootEvent(data) {
     const cell_x = data.cell_x
     const cell_y = data.cell_y
-    document.getElementById('chat-log').value += ("Got shot at coordinate: " + cell_x + + " " + cell_y + '\n');
+
     //we will color self board if receive shot event from opponent
     colorShotCell(cell_x, cell_y, "self")
 }

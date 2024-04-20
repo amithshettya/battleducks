@@ -53,9 +53,9 @@ class ChatConsumer(WebsocketConsumer):
                 game = get_object_or_404(Game, room_code=room_name)
                 
                 if game.player1.id == data['user_id']:
-                    user = game.player2
-                else:
                     user = game.player1
+                else:
+                    user = game.player2
 
                 name = user.first_name + " " + user.last_name
                 async_to_sync(self.channel_layer.group_send)(
@@ -132,7 +132,7 @@ class ChatConsumer(WebsocketConsumer):
             x_ref = duck.x
             y_ref = duck.y
 
-            if orientation == InGameDuck.DuckOrientation.NORTH or orientation == InGameDuck.DuckOrientation.SOUTH:
+            if orientation == InGameDuck.DuckOrientation.NORTH or orientation.InGameDuck.DuckOrientation.SOUTH:
                 height, width = duck.duck.height, duck.duck.width
             else:
                 height, width = duck.duck.width, duck.duck.height

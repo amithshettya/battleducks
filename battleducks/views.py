@@ -179,8 +179,11 @@ def get_own_ducks(request, room_name):
         my_item = {
             'size': duck.duck.name,
             'orientation': convertOrientation(duck.orientation),
+            'original_orientation': duck.orientation,
             'x': duck.x,
-            'y': duck.y
+            'y': duck.y,
+            'width': duck.duck.width,
+            'height': duck.duck.height
         }
         response_data.append(my_item)
 

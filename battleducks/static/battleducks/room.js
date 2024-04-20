@@ -110,6 +110,7 @@ function colorShotCell(cell_x, cell_y, player) {
 
 function colorPlacedCell(cell_x, cell_y) {
     const cellId = `self-cell-${cell_x}-${cell_y}`;
+    console.log("color cell " + cellId)
     const cell = document.getElementById(cellId)
     if (!cell.classList.contains("placed")) {
          cell.classList.add("placed");
@@ -159,19 +160,50 @@ function setUpDucks() {
     });
 }
 
+
 function placeDucks(response) {
     let ducks = response;
-    for (let index in ducks) {
+     for (let index in ducks) {
         let duck = ducks[index]
-        const element = document.createElement('div');
-        element.setAttribute('data-size', duck.size);
-        const duckEl = new Duck(element);
-        console.log(duck.orientation)
-        duckEl.setOrientation(duck.orientation);
-
-        let cells = board.getCells();
-        let cell = cells[duck.y*Board.BOARD_SIZE + duck.x];
-
-        board.dropDuck(cell, duckEl);
+        let x = duck.x
+        let y = duck.y
+        let width = duck.width
+        let height = duck.height
+        let orientation = duck.orientation
+        if (orientation === "scaleY(1)" || orientation === "scaleY(-1)"){
+            console.log("SDSDSDSDD")
+            for (let i = x; i < x+width; i++){
+                for (let j = y; j < y+height; j++){
+                    const cellId = `self-cell-${i}-${j}`;
+                    console.log("DOOD" , duck, cellId)
+                    colorPlacedCell(i, j)
+                }
+            }
+        } else {
+            console.log("asdasdasdasd")
+             for (let i = x; i < x+height; i++){
+                for (let j = y; j < y+width; j++){
+                    colorPlacedCell(i, j)
+                }
+            }
+        }
     }
 }
+
+// TODO, fix this
+// function placeDucks(response) {
+//     let ducks = response;
+//     for (let index in ducks) {
+//         let duck = ducks[index]
+//         const element = document.createElement('div');
+//         element.setAttribute('data-size', duck.size);
+//         const duckEl = new Duck(element);
+//         console.log(duck.orientation)
+//         duckEl.setOrientation(duck.orientation);
+//
+//         let cells = board.getCells();
+//         let cell = cells[duck.y*Board.BOARD_SIZE + duck.x];
+//
+//         board.dropDuck(cell, duckEl);
+//     }
+// }

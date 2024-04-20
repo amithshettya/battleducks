@@ -65,7 +65,7 @@
 }
 
 .cell.placed {
-  background-color: green; /* Background color when clicked */
+  background-color: yellow; /* Background color when clicked */
 }
 
 .add-form {

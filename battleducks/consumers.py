@@ -2,6 +2,8 @@ import json
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from django.shortcuts import render, redirect, get_object_or_404
+from battleducks.models import Game, Player, InGameDuck, Duck
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -42,6 +44,10 @@ class ChatConsumer(WebsocketConsumer):
         if action == 'shoot':
             cell_x = data["cell_x"]
             cell_y = data["cell_y"]
+
+            room_name = self.room_group_name.split('_')[1]
+            self.shooting_by(room_name, data['user_id'], cell_x, cell_y)
+
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
@@ -85,3 +91,30 @@ class ChatConsumer(WebsocketConsumer):
 
     def send_error(self, error_message):
         self.send(text_data=json.dumps({'error': error_message}))
+    
+    def shooting_by(self, room_name, user_id, x, y):
+        room_name = room_name.upper()
+        game = get_object_or_404(Game, room_code=room_name)
+        
+        if game.player1.id == user_id:
+            opponent = game.player2
+        else:
+            opponent = game.player1
+
+        ducks = InGameDuck.objects.filter(game=game, owner=opponent)
+
+        for duck in ducks:
+            orientation = duck.orientation
+            x_ref = duck.x
+            y_ref = duck.y
+
+            if orientation == InGameDuck.DuckOrientation.NORTH or orientation.InGameDuck.DuckOrientation.SOUTH:
+                height, width = duck.duck.height, duck.duck.width
+            else:
+                height, width = duck.duck.width, duck.duck.height
+            
+            if x_ref <= x < x_ref+width and y_ref <= y < y_ref+height:
+                duck.status = InGameDuck.DuckStatus.DEAD
+                duck.save()
+                print("duck died", x_ref, y_ref)
+                return

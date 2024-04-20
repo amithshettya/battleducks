@@ -15,6 +15,30 @@ class Board {
         }
     }
 
+    drawRoom(socket, player, shootFunction) {
+        for (let y = 0; y < Board.BOARD_SIZE; y++) { // 15x15 grid
+            for (let x = 0; x < Board.BOARD_SIZE; x++) {
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+                cell.id = `${player}-cell-${x}-${y}`; // Assigns a unique ID to each cell
+                cell.addEventListener("click", function () {
+                    //send shoot event via websocket
+                    if(player === "opponent"){
+                        shootFunction(x, y, player)
+                        let data = {
+                            "action": "shoot",
+                            "user_id": user_id,
+                            "cell_x": x,
+                            "cell_y": y,
+                        }
+                        socket.send(JSON.stringify(data))
+                    }
+                });
+                this.element.appendChild(cell);
+            }
+        }
+    }
+
     initializeDragEvents(arena) {
         const duckCells = Array.from(this.element.children);
         for(let cell of duckCells) {
@@ -39,9 +63,12 @@ class Board {
         // set the location of the duck with its size
         movingDuck.element.setAttribute("data-cell-id", cell.id);
 
+        const rect = cell.getBoundingClientRect();
+        const doc = document.documentElement;
+
         movingDuck.rePositionCSSAbsolute(
-            `${cell.getBoundingClientRect().top}px`,
-            `${cell.getBoundingClientRect().left}px`
+            `${rect.top + doc.scrollTop}px`,
+            `${rect.left + doc.scrollLeft}px`
         )
 
         this.updateShadow(cell.id, movingDuck)
@@ -123,13 +150,13 @@ class Board {
 
     getCoordinateFromCellID(cell_id){
         return {
-            x: parseInt(cell_id.split('-')[2], 10),
-            y: parseInt(cell_id.split('-')[1], 10),
+            x: parseInt(cell_id.split('-')[1], 10),
+            y: parseInt(cell_id.split('-')[2], 10),
         }
     }
 
     getCellIDFromCoordinate(x, y) {
-        return `cell-${y}-${x}`
+        return `cell-${x}-${y}`
     }
 
     getCells() {

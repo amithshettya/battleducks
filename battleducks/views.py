@@ -68,6 +68,7 @@ def get_game_state(request, room_name):
     if request.method != 'GET':
         return Http404("Use get request get game state")
     
+    room_name = room_name.upper()
     game = get_object_or_404(Game, room_code=room_name)
 
     if request.user != game.player1 and request.user != game.player2:
@@ -102,6 +103,7 @@ def get_game_state(request, room_name):
     return JsonResponse({'state': state})
 
 def save_ducks(request, room_name):
+    room_name = room_name.upper()
     game = get_object_or_404(Game, room_code=room_name)
     if request.user != game.player1 and request.user != game.player2:
         raise PermissionDenied()
@@ -157,6 +159,35 @@ def create_room(request):
     my_response = {'room_code': room_code}
     response_json = json.dumps(my_response)
 
+    return HttpResponse(response_json, content_type='application/json')
+
+@login_required
+def get_own_ducks(request, room_name):
+    if request.method != 'GET':
+        return _my_json_error_response("You must use a GET request for this operation", status=404)
+    
+    room_name = room_name.upper()
+    game = get_object_or_404(Game, room_code=room_name)
+
+    if request.user != game.player1 and request.user != game.player2:
+        raise PermissionDenied()
+    
+    ducks = InGameDuck.objects.filter(game=game, owner=request.user)
+
+    response_data = []
+    for duck in ducks:
+        my_item = {
+            'size': duck.duck.name,
+            'orientation': convertOrientation(duck.orientation),
+            'original_orientation': duck.orientation,
+            'x': duck.x,
+            'y': duck.y,
+            'width': duck.duck.width,
+            'height': duck.duck.height
+        }
+        response_data.append(my_item)
+
+    response_json = json.dumps(response_data)
     return HttpResponse(response_json, content_type='application/json')
 
 def _my_json_error_response(message, status=200):
@@ -229,3 +260,15 @@ def getOrientationCode(orientation):
         return InGameDuck.DuckOrientation.WEST
     else:
         raise ValueError("Invalid orientation")
+    
+def convertOrientation(orientation):
+    if orientation == InGameDuck.DuckOrientation.NORTH:
+        return "scaleY(1)"
+    elif orientation == InGameDuck.DuckOrientation.EAST:
+        return "scaleX(1)"
+    elif orientation == InGameDuck.DuckOrientation.SOUTH:
+        return "scaleY(-1)"
+    elif orientation == InGameDuck.DuckOrientation.WEST:
+        return "scaleX(-1)"
+    else:
+        raise ValueError("Invalid saved orientation.")

@@ -1,3 +1,6 @@
+let board;
+let ducks;
+
 function initGameRoom() {
     connectToServer()
 }
@@ -41,6 +44,7 @@ function connectToServer() {
     }
 
     setUpGame(socket)
+    setUpDucks()
     setupChat(socket)
 }
 
@@ -73,47 +77,25 @@ function handleChatEvent(data) {
     `
     const chatLog = document.getElementById('chat-log');
     chatLog.appendChild(chatMessage);
-    console.log("here 2")
 }
 
 function handleShootEvent(data) {
     const cell_x = data.cell_x
     const cell_y = data.cell_y
-    document.getElementById('chat-log').value += ("Got shot at coordinate: " + cell_x + + " " + cell_y + '\n');
+
     //we will color self board if receive shot event from opponent
     colorShotCell(cell_x, cell_y, "self")
 }
 
 
 function setUpGame(socket) {
-    setUpBoard(socket, "self")
+    board = setUpBoard(socket, "self")
     setUpBoard(socket, "opponent")
 }
 function setUpBoard(socket, player) {
-    const grid = document.getElementById(`battleship-grid-${player}`);
-
-    for (let i = 0; i < 15; i++) { // 15x15 grid
-        for (let j = 0; j < 15; j++) {
-            const cell = document.createElement("div");
-            cell.classList.add("cell");
-            cell.id = `${player}-cell-${i}-${j}`; // Assigns a unique ID to each cell
-            cell.addEventListener("click", function () {
-                //send shoot event via websocket
-                if(player === "opponent"){
-                    colorShotCell(i, j, player)
-                    let data = {
-                        "action": "shoot",
-                        "cell_x": i,
-                        "cell_y": j,
-                    }
-                    socket.send(JSON.stringify(data))
-                } else {
-                    colorPlacedCell(i, j)
-                }
-            });
-            grid.appendChild(cell);
-        }
-    }
+    let setupBoard = new Board(document.getElementById(`battleship-grid-${player}`));
+    setupBoard.drawRoom(socket, player, colorShotCell)
+    return setupBoard
 }
 
 function colorShotCell(cell_x, cell_y, player) {
@@ -127,6 +109,7 @@ function colorShotCell(cell_x, cell_y, player) {
 
 function colorPlacedCell(cell_x, cell_y) {
     const cellId = `self-cell-${cell_x}-${cell_y}`;
+    console.log("color cell " + cellId)
     const cell = document.getElementById(cellId)
     if (!cell.classList.contains("placed")) {
          cell.classList.add("placed");
@@ -152,6 +135,11 @@ function setupChat(socket) {
     };
 }
 
+function displayError(message) {
+    let errorElement = document.getElementById("error")
+    errorElement.innerHTML = message
+}
+
 function displayMessage(heading, message, color) {
     let messageElement = document.getElementById("status")
     messageElement.innerHTML = `
@@ -160,3 +148,61 @@ function displayMessage(heading, message, color) {
         </div>
     `
 }
+
+function setUpDucks() {
+    $.ajax({
+        url: `/battleducks/room/${roomName}/get_my_ducks`,
+        type: "GET",
+        dataType : "json",
+        success: placeDucks,
+        error: displayError
+    });
+}
+
+
+function placeDucks(response) {
+    let ducks = response;
+     for (let index in ducks) {
+        let duck = ducks[index]
+        let x = duck.x
+        let y = duck.y
+        let width = duck.width
+        let height = duck.height
+        let orientation = duck.orientation
+        if (orientation === "scaleY(1)" || orientation === "scaleY(-1)"){
+            console.log("SDSDSDSDD")
+            for (let i = x; i < x+width; i++){
+                for (let j = y; j < y+height; j++){
+                    const cellId = `self-cell-${i}-${j}`;
+                    console.log("DOOD" , duck, cellId)
+                    colorPlacedCell(i, j)
+                }
+            }
+        } else {
+            console.log("asdasdasdasd")
+             for (let i = x; i < x+height; i++){
+                for (let j = y; j < y+width; j++){
+                    colorPlacedCell(i, j)
+                }
+            }
+        }
+    }
+}
+
+// TODO, fix this
+// function placeDucks(response) {
+//     let ducks = response;
+//     for (let index in ducks) {
+//         let duck = ducks[index]
+//         const element = document.createElement('div');
+//         element.setAttribute('data-size', duck.size);
+//         const duckEl = new Duck(element);
+//         console.log(duck.orientation)
+//         duckEl.setOrientation(duck.orientation);
+//
+//         let cells = board.getCells();
+//         let cell = cells[duck.y*Board.BOARD_SIZE + duck.x];
+//
+//         board.dropDuck(cell, duckEl);
+//     }
+// }

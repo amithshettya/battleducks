@@ -27,6 +27,7 @@ class Board {
                         shootFunction(x, y, player)
                         let data = {
                             "action": "shoot",
+                            "user_id": user_id,
                             "cell_x": x,
                             "cell_y": y,
                         }

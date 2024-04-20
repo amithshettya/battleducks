@@ -170,7 +170,7 @@ function placeDucks(response) {
         duckEl.setOrientation(duck.orientation);
 
         let cells = board.getCells();
-        let cell = cells[duck.x*Board.BOARD_SIZE + duck.y];
+        let cell = cells[duck.y*Board.BOARD_SIZE + duck.x];
 
         board.dropDuck(cell, duckEl);
     }

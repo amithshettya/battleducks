@@ -149,13 +149,13 @@ class Board {
 
     getCoordinateFromCellID(cell_id){
         return {
-            x: parseInt(cell_id.split('-')[2], 10),
-            y: parseInt(cell_id.split('-')[1], 10),
+            x: parseInt(cell_id.split('-')[1], 10),
+            y: parseInt(cell_id.split('-')[2], 10),
         }
     }
 
     getCellIDFromCoordinate(x, y) {
-        return `cell-${y}-${x}`
+        return `cell-${x}-${y}`
     }
 
     getCells() {

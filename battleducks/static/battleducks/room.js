@@ -39,6 +39,18 @@ function connectToServer() {
             handleChatEvent(data)
         } else if (eventType === "shoot") {
             handleShootEvent(data)
+        } else if (eventType === "announcement") {
+            document.body.innerHTML = `
+            <div class="flex flex-wrap items-center justify-center pl-10 pr-10 h-screen" >
+                <div href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+
+                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                ${data["winner"]} won the game</h5>
+                
+                </div>
+            </div>
+
+            `
         }
 
     }
@@ -105,6 +117,12 @@ function colorShotCell(cell_x, cell_y, player) {
         cell.classList.remove("placed")
         cell.classList.add("shot");
     }
+
+    updateShotDuck()
+}
+
+function updateShotDuck() {
+    // TODO
 }
 
 function colorPlacedCell(cell_x, cell_y) {

@@ -98,6 +98,7 @@ function handleShootEvent(data) {
 
     //we will color self board if receive shot event from opponent
     colorShotCell(cell_x, cell_y, "self")
+    updateShotDuck(cell_x, cell_y)
 }
 
 
@@ -119,11 +120,27 @@ function colorShotCell(cell_x, cell_y, player) {
         cell.classList.add("shot");
     }
 
-    updateShotDuck()
+    
 }
 
-function updateShotDuck() {
-    // TODO
+function updateShotDuck(x_shot, y_shot) {
+    for (let index in ducks) {
+        let duck = ducks[index]
+        let x = duck.x
+        let y = duck.y
+        let width = duck.width
+        let height = duck.height
+        
+        if(x <= x_shot && x_shot < x + width && y <= y_shot && y_shot < y+height) {
+            for(let j=y; j<y+height; j ++){
+                for(let i=x;i<x+width; i++) {
+                    colorShotCell(i, j, "self")
+                }
+            }
+        }
+
+    }
+
 }
 
 function colorPlacedCell(cell_x, cell_y) {
@@ -180,7 +197,7 @@ function setUpDucks() {
 
 
 function placeDucks(response) {
-    let ducks = response;
+    ducks = response;
      for (let index in ducks) {
         let duck = ducks[index]
         let x = duck.x
